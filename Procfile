@@ -1,1 +1,1 @@
-web: node prototype\index.js
+web: node server.js
