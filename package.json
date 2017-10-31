@@ -1,0 +1,15 @@
+{
+  "name": "prototype",
+  "version": "1.0.0",
+  "description": "Prototipo do roteirizador",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Renan Zozimo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}

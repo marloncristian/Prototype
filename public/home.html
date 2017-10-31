@@ -1,0 +1,88 @@
+<div class="row">
+    <div class="col-xs-12 space-between center">
+        <h1>Roteirizações</h1>
+        <div class="hidden-button-on-scroll" ng-class="{'show' : !showFab}">
+            <button class="btn color-accent createButton" ng-click="createScripting('/new')" ng-show="!thereIsSomeScriptingInProgress">
+                + nova roteirização
+            </button>
+        </div>
+    </div>
+</div>
+<div class="table-responsive table-card-parent">
+    <table class="table-card">
+        <thead>
+            <tr>
+                <th class="v-align-children cursor-pointer" ng-click="sortBy('name')">
+                    <span>Nome</span>
+                    <div class="color text-disabled-black mg-lt-15 clearfix" style="width: 38px;">
+                        <i class="material-icons pull-left color"
+                           ng-class="{'text-primary-black' : propertyName == 'name' && reverse}">arrow_drop_up</i>
+                        <i class="material-icons pull-left color"
+                           ng-class="{'text-primary-black' : propertyName == 'name' && !reverse}"
+                           style="margin-top: -10px;">arrow_drop_down</i>
+                    </div>
+                </th>
+                <th class="v-align-children cursor-pointer" ng-click="sortBy('createdAt')">
+                    <span>Criada em</span>
+                    <div class="color text-disabled-black mg-lt-15 clearfix" style="width: 38px;">
+                        <i class="material-icons pull-left color"
+                           ng-class="{'text-primary-black' : propertyName == 'createdAt' && reverse}">arrow_drop_up</i>
+                        <i class="material-icons pull-left color"
+                           ng-class="{'text-primary-black' : propertyName == 'createdAt' && !reverse}"
+                           style="margin-top: -10px;">arrow_drop_down</i>
+                    </div>
+                </th>
+                <th class="v-align-children cursor-pointer" ng-click="sortBy('updatedAt')">
+                    <span>Atualizada em</span>
+                    <div class="color text-disabled-black mg-lt-15 clearfix" style="width: 38px;">
+                        <i class="material-icons pull-left color"
+                           ng-class="{'text-primary-black' : propertyName == 'updatedAt' && reverse}">arrow_drop_up</i>
+                        <i class="material-icons pull-left color"
+                           ng-class="{'text-primary-black' : propertyName == 'updatedAt' && !reverse}"
+                           style="margin-top: -10px;">arrow_drop_down</i>
+                    </div>
+                </th>
+                <th class="v-align-children cursor-pointer" ng-click="sortBy('status')">
+                    <span>Etapa atual</span>
+                    <div class="color text-disabled-black mg-lt-15 clearfix" style="width: 38px;">
+                        <i class="material-icons pull-left color"
+                           ng-class="{'text-primary-black' : propertyName == 'status' && reverse}">arrow_drop_up</i>
+                        <i class="material-icons pull-left color"
+                           ng-class="{'text-primary-black' : propertyName == 'status' && !reverse}"
+                           style="margin-top: -10px;">arrow_drop_down</i>
+                    </div>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="color text-secondary-black" ng-repeat="sc in scriptings | orderBy:propertyName:reverse" ng-hide="sc.id == 0 && !thereIsSomeScriptingInProgress">
+                <td class="pivot" data-th="Nome">{{sc.name}}</td>
+                <td data-th="Criada em">{{sc.createdAt | date:"dd/MM/yyyy 'às' HH:mm"}}</td>
+                <td data-th="Atualizada em">{{sc.updatedAt | date:"dd/MM/yyyy 'às' HH:mm"}}</td>
+                <td data-th="Etapa atual">
+                    <span ng-if="sc.status == 0">1. Dados</span>
+                    <span ng-if="sc.status == 1">2. Processamento</span>
+                    <span ng-if="sc.status == 2">3. Roteirização concluída</span>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group text-right">
+                        <button class="btn type-flat">
+                            <span ng-if="sc.status < 2" ng-click="go('/new')">continuar</span>
+                            <span ng-if="sc.status == 2">ver detalhes</span>
+                        </button>
+                        <button class="btn type-flat icon-24">
+                            <i class="material-icons">more_vert</i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="fab-group bottom-to-top hidden-fab-on-scroll" ng-class="{'show' : showFab}" style="width: 56px;height: 56px;transform-origin: 50% 50%;" ng-show="!thereIsSomeScriptingInProgress">
+    <button class="btn type-fab color-accent fab-content-toggle" ng-class="{'active' : showAddVehicle}"  href="#!new" style="display: inline-block" ng-click="createScripting('/new')">
+        <i class="material-icons click-fab-icon">add</i>
+    </button>
+</div>

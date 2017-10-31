@@ -1,0 +1,194 @@
+<html ng-app="rps">
+<head>
+    <meta charset="UTF-8">
+    <title>Planejeiro</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="static/css/layout.css">
+    <link rel="stylesheet" href="static/css/pink-teal.css">
+
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
+
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyDBK9LqptxnScfoPSyQ03YtbzBh_ctAtH8",
+        authDomain: "planejeiroz.firebaseapp.com",
+        databaseURL: "https://planejeiroz.firebaseio.com",
+        projectId: "planejeiroz",
+        storageBucket: "planejeiroz.appspot.com",
+        messagingSenderId: "29226383212"
+      };
+      firebase.initializeApp(config);
+    </script>
+
+    <style>
+
+        .modal, .modal-backdrop {
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 300ms ease 0.1s, z-index 0s linear 0.4s;
+        }
+        .modal.active, .modal-backdrop.active {
+            opacity: 1;
+            transition: opacity 300ms ease 0.1s, z-index 0s linear 0s;
+        }
+        .modal.active {
+            z-index: 1080;
+        }
+        .modal-backdrop.active {
+            z-index: 1070;
+        }
+
+        .card[class*="vehicle-"].active {
+            background-color: rgba(0,150,136, 0.2);
+        }
+        .without-right-spacing {
+            margin-right: 0;
+        }
+        .without-right-spacing > [class*="col-"] {
+            padding-right: 0;
+        }
+
+        .hidden-fab-on-scroll {
+            transform: scale(0);
+            transition: transform 0.2s ease;
+        }
+        .hidden-fab-on-scroll.show {
+            transform: scale(1);
+            transition: transform 0.3s ease;
+        }
+        .hidden-button-on-scroll {
+            opacity: 0;
+            transition: opacity 0.3s ease 0.1s;
+        }
+        .hidden-button-on-scroll.show {
+            opacity: 1;
+            transition: opacity 0.3s ease 0.2s;
+        }
+
+        @media (min-width: 600px) {
+            .fab-content.active {
+                right: 30px;
+            }
+        }
+
+        @media (min-width: 600px) {
+            .fab-content.bottom {
+                bottom: 30px;
+            }
+        }
+
+        .btn.color-grey {
+            color: rgba(255,255,255,0.95) !important;
+        }
+        .btn.color-grey::before {
+            background-color: #555 !important;
+        }
+        .btn.color-grey::after {
+            background-color: #444 !important;
+        }
+        .btn[disabled].color-grey {
+            color: rgba(0,0,0,0.3) !important;
+        }
+
+        .show-details-on .address-group.not-active {
+            display: none;
+        }
+
+        .show-details-on .address-group[class*="active"] {
+            position: absolute;
+        }
+        .show-details-on .address-group[class*="active"]:not(.not-active) {
+            display: flex;
+            flex-flow: column;
+        }
+        .show-details-on .address-group[class*="active-"] {
+            transform: scale(0.8);
+            top: 60px;
+            opacity: 0.4;
+            z-index: -1;
+            height: 100%;
+        }
+        .show-details-on .address-group.active {
+            width: calc(100% - 165px);
+            right: 90px;
+            top: 15px;
+            border: 1px solid rgba(0,0,0,0.1);
+            margin-bottom: 0;
+            height: calc(100% - 30px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        .show-details-on .address-group.active-prev {
+            width: 382px;
+            left: 0;
+            transform-origin: 0 0;
+        }
+        .show-details-on .address-group.active-next {
+            width: 382px;
+            right: 15px;
+            transform-origin: 100% 0;
+        }
+        .overflow-limiter.show-scroll.show-details-on {
+            overflow-y: hidden !important;
+        }
+        .animate-buttons button {
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 375ms ease-in-out 0s, z-index 0s linear 375ms;
+        }
+        .animate-buttons button.show {
+            opacity: 1;
+            z-index: 1;
+            transition: opacity 375ms ease-in-out 375ms, z-index 0s linear 0s;
+        }
+        .animate-buttons button:nth-child(2) {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+        }
+        .fab-group.bottom-to-top.on-hover:hover .type-fab.btn:nth-child(5) {
+            bottom: 284;
+        }
+
+    </style>
+
+</head>
+
+<body ng-controller="MainController" ng-class="{'mezzanine-active' : mezzanineIsActive, 'loading white-loading' : bodyLoading}">
+    <navbar ng-include="'static/navbar.html'"></navbar>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12" ng-view></div>
+        </div>
+    </div>
+
+    <div class="snackbar" ng-class="{'active' : showToast}">
+        <span>{{toastMessage}}</span>
+        <div class="btn-group">
+            <button class="btn type-flat color-accent mini" ng-click="closeToast()">
+                ok
+            </button>
+        </div>
+    </div>
+
+    </div>
+
+    <script src="static/js/ui-bootstrap-tpls-2.5.0.min.js" charset="utf-8"></script>
+
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBK9LqptxnScfoPSyQ03YtbzBh_ctAtH8&callback=initMap">
+    </script>
+
+    <script src="static/js/app.js" charset="utf-8"></script>
+
+</body>
+</html>

@@ -1,0 +1,901 @@
+<style>
+    body {
+        padding: 0;
+    }
+    navbar > nav > * {
+        transform: scale(0);
+        opacity: 0;
+    }
+    .page {
+        height: 100vh;
+        width: 100vw;
+        top: 0;
+        position: fixed;
+    }
+    .view-animate.ng-leave {
+        opacity: 0;
+    }
+    .structure.left {
+        width: 540px;
+        float: left;
+        height: calc(100vh - 60px);
+        border-right: 1px solid rgba(0,0,0,0.12);
+        z-index: 2;
+    }
+    .structure.left > *:not(.structure-body) {
+        flex-shrink: 0;
+    }
+    .structure.right {
+        width: calc(100vw - 540px);
+        float: right;
+        height: calc(100vh - 60px);
+    }
+    .page.resize .structure.left {
+        width: 50%;
+        height: 100vh;
+    }
+    .page.resize .structure.right {
+        width: 50%;
+        height: 100vh;
+    }
+    .pd-tp-10 {
+        padding-top: 10px;
+    }
+    .pd-bt-10 {
+        padding-bottom: 10px;
+    }
+    .structure.right > .structure-body {
+        border-radius: 0;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .page [class^="structure-"]:not(.no-progress)::after, .page .justify-children::after {
+        background-color: rgba(255,255,255,0.7);
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 2;
+        display: none;
+    }
+
+    .in-progress [class^="structure-"]:not(.no-progress)::after, .in-progress .justify-children::after {
+        display: block;
+    }
+
+    [class^="structure-"]:not(.no-progress), .justify-children {
+        position: relative;
+    }
+</style>
+<div class="page bg-color white" ng-class="{'resize' : showAddressContentActive != null, 'in-progress' : inProgress}">
+    <div class="justify-children center pd-tp-10 pd-bt-10 pd-rt-15 pd-lt-15" ng-show="showAddressContentActive == null">
+        <div class="left">
+            <div class="scripting-title v-align-children">
+                <span class="headline">{{scriptingName}}</span>
+                <i class="material-icons mg-lt-15 color text-disabled-black">edit</i>
+            </div>
+            <div class="divider-v-30 mg-rt-15"></div>
+            <div class="form-group checkbox mg-0-force">
+                <div class="content color text-disabled-black">
+                    <input id="autosave" class="form-control mg-0" type="checkbox" name="autosave" ng-model="autosave" ng-init="autosave = true" disabled>
+                    <div class="checkbox-icons text-left">
+                        <i class="material-icons">check_box_outline_blank</i>
+                        <i class="material-icons">check_box</i>
+                    </div>
+                    <label class="caption control-label reacts-btn-icon-24 text-nowrap" for="autosave">
+                        <span>salvamento automático</span>
+                        <span class="mg-lt-5 mg-rt-5">●</span>
+                        <span class="color text-disabled-black">salvo automaticamente há alguns segundos</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="btn-group text-right">
+                <!-- <button class="btn type-flat">salvar</button> -->
+                <button class="btn type-flat" ng-click="exitScripting('/')">salvar e sair</button>
+                <!-- <a class="btn type-flat" href="#!">sair</a> -->
+            </div>
+        </div>
+    </div>
+    <hr class="mg-0">
+    <div class="structure left" ng-show="scriptingStep == 1">
+        <div class="structure-part justify-children center pd-tp-10 pd-bt-10 pd-rt-15 pd-lt-15" ng-show="showAddressContentActive == null">
+            <div class="left">
+                <div class="step-title v-align-children">
+                    <span class="headline">Dados</span>
+                    <div class="divider-v-30 mg-lt-15 mg-rt-15"></div>
+                    <span class="color text-disabled-black">Etapa 1 de 3</span>
+                </div>
+            </div>
+            <div class="right">
+                <button class="btn" ng-disabled="!somePointsAdded" ng-click="setStep(2)">próxima etapa</button>
+            </div>
+        </div>
+        <hr class="mg-0" ng-show="showAddressContentActive == null">
+        <div class="structure-part text-right pd-tp-10 pd-bt-10 pd-rt-15 pd-lt-15 justify-children center" ng-show="showAddressContentActive == null && somePointsAdded">
+            <div class="left text-left" style="-webkit-padding-before: 4px; -webkit-padding-after: 4px;" ng-show="somePointsAdded">
+                <button class="btn type-flat color-accent no-active-feedback" ng-click="modalToSelectFile = true">
+                    <i class="material-icons">file_upload</i>
+                    <span>importar dados</span>
+                </button>
+            </div>
+            <div class="right" ng-show="!showAddInput">
+                <button class="btn type-flat color-accent no-active-feedback" ng-click="showAddInput = true">
+                    <i class="material-icons">add</i>
+                    <span>adicionar um ponto</span>
+                </button>
+            </div>
+        </div>
+        <div class="structure-part pd-lt-15 pd-rt-15" ng-show="showAddInput">
+            <div id="address-list-input" class="form-group mg-bt-15 space-between center" ng-class="{'is-focused': addAddressTextIsFocused}" ng-show="showAddressContentActive == null">
+                <div class="input-group-container pd-lt-15">
+                    <span class="subheading mg-rt-15">{{points.length + 1}}.</span>
+                    <div class="input-group">
+                        <input id="addAddressText"
+                               class="form-control"
+                               type="text"
+                               placeholder="Placeholder"
+                               ng-focus="addAddressTextIsFocused = true"
+                               ng-blur="addAddressTextIsFocused = false"
+                               ng-model="addAddressText">
+
+                        <span class="material-input"></span>
+                    </div>
+                    <button class="btn type-flat color-grey" type="button" style="flex-shrink: 0; height: 38px;" ng-click="geocodeAddress(addAddressText)" ng-disabled="!addAddressText">
+                        <span>adiconar</span>
+                    </button>
+                </div>
+                <button class="btn type-flat icon-24 mg-lt-15" style="flex-shrink: 0;" ng-click="showAddInput = false">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
+        </div>
+        <div class="structure-body pd-lt-15-force pd-rt-15-force relative">
+            <div class="overflow-limiter show-scroll text-center relative" style="padding-top: 0;" ng-show="!somePointsAdded">
+                <img class="mg-bt-30" src="static/imgs/point-placeholder.png" alt="" style="filter: grayscale(1); opacity: 0.2; margin-top: 90px; width: 120px;">
+                <div class="pd-15">
+                    <span class="title color text-disabled-black">Nenhum ponto adicionado até agora</span>
+                </div>
+                <button class="btn color-accent mg-tp-30 no-active-feedback" ng-click="modalToSelectFile = true">
+                    <i class="material-icons">file_upload</i>
+                    <span>importar dados</span>
+                </button>
+            </div>
+            <div id="address-list" class="overflow-limiter show-scroll relative" style="padding-top: 0;" ng-class="{'show-details-on' : showAddressContentActive != null}" ng-show="somePointsAdded">
+                <div class="mg-bt-15 address-group"
+                     style="background-color: #f9f9f9"
+                     ng-repeat="point in points | reverse"
+                     ng-class="{ 'active' : showAddressContentActive == $index, 'active-prev' : showAddressContentActive == $index + 1, 'active-next' : showAddressContentActive == $index - 1, 'not-active' : showAddressContentActive != $index - 1 && showAddressContentActive != $index + 1 && showAddressContentActive != $index}">
+                    <div class="pd-15 space-between" style="flex-shrink: 0" ng-click="expandAddressContent($index)" ng-class="{'cursor-pointer' : showAddressContentActive == null}">
+                        <span class="body-2 mg-rt-15">{{points.length - $index}}. {{point.route + ', ' + point.street_number + ' - ' + point.subregion + ', ' + point.city + ' - ' + point.state + ', ' + point.postal + ', ' + point.country}}</span>
+                        <i class="material-icons">
+                            <span class="color text-success" ng-show="point.route && point.street_number && point.subregion && point.city && point.state && point.country">check</span>
+                            <span class="color" style="color: #d9534f" ng-show="!point.route || !point.street_number || !point.subregion || !point.city || !point.state || !point.country">error</span>
+                        </i>
+                    </div>
+
+                    <div class="structure pd-lt-15 pd-rt-0 pd-bt-15 address-content" ng-show="showAddressContentActive == $index || showAddressContentActive == $index - 1 || showAddressContentActive == $index + 1">
+                        <div class="structure-body pd-0-force">
+                            <div class="overflow-limiter show-scroll" style="padding-top: 0; margin-right: 0; overflow-y: auto !important">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group mg-bt-15" ng-class="{'is-focused': routeIsFocused, 'has-error' : point.route == ''}">
+                                            <label class="control-label" for="route">
+                                                <span>Logradouro</span>
+                                            </label>
+                                            <div class="relative clearfix">
+                                                <input id="route"
+                                                       class="form-control"
+                                                       type="text"
+                                                       name="route"
+                                                       ng-model="point.route"
+                                                       ng-focus="routeIsFocused = true"
+                                                       ng-blur="routeIsFocused = false; savePoint(point); returnQtyError()"/>
+
+                                                <i class="form-control-feedback help-block material-icons">
+                                                    <span class="color text-success" ng-show="point.route != ''">check</span>
+                                                    <span class="color" ng-show="point.route == ''">error</span>
+                                                </i>
+                                                <span class="material-input"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group mg-bt-15" ng-class="{'is-focused': street_numberIsFocused, 'has-error' : point.street_number == ''}">
+                                            <label class="control-label" for="street_number">
+                                                <span>Número</span>
+                                            </label>
+                                            <div class="relative clearfix">
+                                                <input id="street_number"
+                                                       class="form-control"
+                                                       type="text"
+                                                       name="street_number"
+                                                       ng-model="point.street_number"
+                                                       ng-focus="street_numberIsFocused = true"
+                                                       ng-blur="street_numberIsFocused = false; savePoint(point); returnQtyError()"/>
+
+                                                <i class="form-control-feedback help-block material-icons">
+                                                    <span class="color text-success" ng-show="point.street_number != ''">check</span>
+                                                    <span class="color" ng-show="point.street_number == ''">error</span>
+                                                </i>
+                                                <span class="material-input"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-8" style="padding-left: 0">
+                                        <div class="form-group mg-bt-15" ng-class="{'is-focused': subregionIsFocused, 'has-error' : point.subregion == ''}">
+                                            <label class="control-label" for="subregion">
+                                                <span>Bairro</span>
+                                            </label>
+                                            <div class="relative clearfix">
+                                                <input id="subregion"
+                                                       class="form-control"
+                                                       type="text"
+                                                       name="subregion"
+                                                       ng-model="point.subregion"
+                                                       ng-focus="subregionIsFocused = true"
+                                                       ng-blur="subregionIsFocused = false; savePoint(point); returnQtyError()"/>
+
+                                                <i class="form-control-feedback help-block material-icons">
+                                                    <span class="color text-success" ng-show="point.subregion != ''">check</span>
+                                                    <span class="color" ng-show="point.subregion == ''">error</span>
+                                                </i>
+                                                <span class="material-input"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-8">
+                                        <div class="form-group mg-bt-15" ng-class="{'is-focused': cityIsFocused, 'has-error' : point.city == ''}">
+                                            <label class="control-label" for="city">
+                                                <span>Cidade</span>
+                                            </label>
+                                            <div class="relative clearfix">
+                                                <input id="city"
+                                                       class="form-control"
+                                                       type="text"
+                                                       name="city"
+                                                       ng-model="point.city"
+                                                       ng-focus="cityIsFocused = true"
+                                                       ng-blur="cityIsFocused = false; savePoint(point); returnQtyError()"/>
+
+                                                <i class="form-control-feedback help-block material-icons">
+                                                    <span class="color text-success" ng-show="point.city != ''">check</span>
+                                                    <span class="color" ng-show="point.city == ''">error</span>
+                                                </i>
+                                                <span class="material-input"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group mg-bt-15" ng-class="{'is-focused': stateIsFocused, 'has-error' : point.state == ''}">
+                                            <label class="control-label" for="state">
+                                                <span>Estado</span>
+                                            </label>
+                                            <div class="relative clearfix">
+                                                <input id="state"
+                                                       class="form-control"
+                                                       type="text"
+                                                       name="state"
+                                                       ng-model="point.state"
+                                                       ng-focus="stateIsFocused = true"
+                                                       ng-blur="stateIsFocused = false; savePoint(point); returnQtyError()"/>
+
+                                                <i class="form-control-feedback help-block material-icons">
+                                                    <span class="color text-success" ng-show="point.state != ''">check</span>
+                                                    <span class="color" ng-show="point.state == ''">error</span>
+                                                </i>
+                                                <span class="material-input"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-xs-6">
+                                        <div class="form-group mg-bt-15" ng-class="{'is-focused': postalIsFocused, 'has-error' : point.postal == ''}">
+                                            <label class="control-label" for="postal">
+                                                <span>Código postal</span>
+                                            </label>
+                                            <div class="relative clearfix">
+                                                <input id="postal"
+                                                       class="form-control "
+                                                       type="text"
+                                                       name="postal"
+                                                       ng-model="point.postal"
+                                                       ng-focus="postalIsFocused = true"
+                                                       ng-blur="postalIsFocused = false; savePoint(point); returnQtyError()"/>
+
+                                                <i class="form-control-feedback help-block material-icons">
+                                                    <span class="color text-success" ng-show="point.postal != ''">check</span>
+                                                    <span class="color" ng-show="point.postal == ''">error</span>
+                                                </i>
+                                                <span class="material-input"></span>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="col-xs-6" style="padding-left: 0">
+                                        <div class="form-group mg-bt-15" ng-class="{'is-focused': countryIsFocused, 'has-error' : point.country == ''}">
+                                            <label class="control-label" for="country">
+                                                <span>País</span>
+                                            </label>
+                                            <div class="relative clearfix">
+                                                <input id="country"
+                                                       class="form-control"
+                                                       type="text"
+                                                       name="country"
+                                                       ng-model="point.country"
+                                                       ng-focus="countryIsFocused = true"
+                                                       ng-blur="countryIsFocused = false; savePoint(point); returnQtyError()"/>
+
+                                                <i class="form-control-feedback help-block material-icons">
+                                                    <span class="color text-success" ng-show="point.country != ''">check</span>
+                                                    <span class="color" ng-show="point.country == ''">error</span>
+                                                </i>
+                                                <span class="material-input"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="mg-bt-30">
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group mg-bt-15" ng-class="{'is-focused': volumeIsFocused, 'has-error' : point.volume == ''}">
+                                            <label class="control-label" for="volume">
+                                                <span>Volume (cm³)</span>
+                                            </label>
+                                            <div class="relative clearfix">
+                                                <input id="volume"
+                                                       class="form-control"
+                                                       type="text"
+                                                       name="volume"
+                                                       ng-model="point.volume"
+                                                       ng-focus="volumeIsFocused = true"
+                                                       ng-blur="volumeIsFocused = false; savePoint(point); returnQtyError()"/>
+
+                                                <i class="form-control-feedback help-block material-icons">
+                                                    <span class="color text-success" ng-show="point.volume != ''">check</span>
+                                                    <span class="color" ng-show="point.volume == ''">error</span>
+                                                </i>
+                                                <span class="material-input"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group mg-bt-15" ng-class="{'is-focused': weightIsFocused, 'has-error' : point.weight == ''}">
+                                            <label class="control-label" for="weight">
+                                                <span>Peso (kg)</span>
+                                            </label>
+                                            <div class="relative clearfix">
+                                                <input id="weight"
+                                                       class="form-control"
+                                                       type="text"
+                                                       name="weight"
+                                                       ng-model="point.weight"
+                                                       ng-focus="weightIsFocused = true"
+                                                       ng-blur="weightIsFocused = false; savePoint(point); returnQtyError()"/>
+
+                                                <i class="form-control-feedback help-block material-icons">
+                                                    <span class="color text-success" ng-show="point.weight != ''">check</span>
+                                                    <span class="color" ng-show="point.weight == ''">error</span>
+                                                </i>
+                                                <span class="material-input"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-group mg-bt-15" ng-class="{'is-focused': priceIsFocused, 'has-error' : point.price == ''}">
+                                            <label class="control-label" for="price">
+                                                <span>Preço (R$)</span>
+                                            </label>
+                                            <div class="relative clearfix">
+                                                <input id="price"
+                                                       class="form-control"
+                                                       type="text"
+                                                       name="price"
+                                                       ng-model="point.price"
+                                                       ng-focus="priceIsFocused = true"
+                                                       ng-blur="priceIsFocused = false; savePoint(point); returnQtyError()"/>
+
+                                                <i class="form-control-feedback help-block material-icons">
+                                                    <span class="color text-success" ng-show="point.price != ''">check</span>
+                                                    <span class="color" ng-show="point.price == ''">error</span>
+                                                </i>
+                                                <span class="material-input"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="structure-part pd-rt-5 pd-bt-5">
+                            <div class="btn-group">
+                                <button class="btn type-flat" type="button" ng-click="refreshMap()">
+                                    <span class="caption">atualizar mapa</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fab-group bottom-to-top" ng-show="showAddressContentActive != null" style="position: absolute; right: 122px;">
+                <button class="btn type-fab color-accent" ng-click="showAddressContent($index)">
+                    <i class="material-icons" uib-tooltip="Concluir" tooltip-placement="left">check</i>
+                </button>
+            </div>
+            <div style="position: absolute; top: 40%; left: 15px; width: 58px; background-color: #fff;" ng-show="showAddressContentActive != null">
+                <button class="btn color-white icon-48 no-active-feedback" ng-click="showAddressContent(showAddressContentActive -1)" ng-disabled="showAddressContentActive == 0" uib-tooltip="Anterior" tooltip-placement="right" tooltip-append-to-body="true">
+                    <i class="material-icons" ng-class="{'color text-accent' : !(showAddressContentActive == 0)}">skip_previous</i>
+                </button>
+                <button class="btn color-white icon-48 no-active-feedback mg-tp-15" ng-click="prevError()" ng-disabled="showAddressContentActive <= firstErrorArray[0]" uib-tooltip="Erro anterior" tooltip-placement="right" tooltip-append-to-body="true">
+                    <i class="material-icons sz-18" style="transform: translate(7px, -5px);" ng-class="{'color text-accent' : !(showAddressContentActive <= firstErrorArray[0])}">skip_previous</i>
+                    <i class="material-icons sz-18" style="position: absolute; left: 12px; bottom: 12px;" ng-class="{'color text-accent' : !(showAddressContentActive <= firstErrorArray[0])}">error</i>
+                </button>
+            </div>
+            <div style="position: absolute; top: 40%; right: 15px; width: 58px; background-color: #fff;" ng-show="showAddressContentActive != null">
+                <button class="btn color-white icon-48 no-active-feedback" ng-click="showAddressContent(showAddressContentActive + 1)" ng-disabled="showAddressContentActive == points.length - 1 " uib-tooltip="Próximo" tooltip-placement="left" tooltip-append-to-body="true">
+                    <i class="material-icons" ng-class="{'color text-accent' : !(showAddressContentActive == points.length - 1 )}">skip_next</i>
+                </button>
+                <button class="btn color-white icon-48 no-active-feedback mg-tp-15" ng-click="nextError()" ng-disabled="showAddressContentActive >= firstErrorArray.slice(-1)[0]"  uib-tooltip="Próximo erro" tooltip-placement="left" tooltip-append-to-body="true">
+                    <i class="material-icons sz-18" style="transform: translate(-5px, -5px);" ng-class="{'color text-accent' : !(showAddressContentActive >= firstErrorArray.slice(-1)[0])}">skip_next</i>
+                    <i class="material-icons sz-18" style="position: absolute; right: 12px; bottom: 12px;" ng-class="{'color text-accent' : !(showAddressContentActive >= firstErrorArray.slice(-1)[0])}">error</i>
+                </button>
+            </div>
+        </div>
+        <div class="structure-footer pd-lt-15 pd-bt-10 pd-tp-10 pd-rt-15 center" ng-show="somePointsAdded">
+            <div class="left animate-buttons" style="-webkit-padding-before: 4px; -webkit-padding-after: 4px;">
+                <button class="btn type-flat color-accent no-active-feedback" ng-click="showAddressContentActive = 0" ng-class="{'show' : showAddressContentActive == null}">
+                    <i class="material-icons">view_carousel</i>
+                    <small>iniciar conferência ponto a ponto</small>
+                </button>
+                <button class="btn type-flat color-accent no-active-feedback" ng-click="showAddressContent(null)" ng-class="{'show' : showAddressContentActive != null}">
+                    <i class="material-icons">arrow_back</i>
+                    <small>voltar à lista de pontos</small>
+                </button>
+            </div>
+            <div class="right">
+                <button class="btn type-flat no-active-feedback" ng-show="qtyErrors > 0" ng-click="showAddressContent(firstErrorIndex)">
+                    <i class="material-icons sz-18 color text-error">error</i>
+                    <span class="caption color text-error">{{qtyErrors}} erro<span ng-show="qtyErrors > 1">s</span></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="structure right" ng-show="scriptingStep == 1">
+        <div class="structure-body" id="map"></div>
+    </div>
+    <div class="structure left" ng-show="scriptingStep == 2" style="width: 50%;">
+        <div class="structure-part justify-children center pd-tp-10 pd-bt-10 pd-rt-15 pd-lt-15">
+            <div class="left">
+                <div class="step-title v-align-children">
+                    <span class="headline">Processamento</span>
+                    <div class="divider-v-30 mg-lt-15 mg-rt-15"></div>
+                    <span class="color text-disabled-black">Etapa 2 de 3</span>
+                </div>
+            </div>
+        </div>
+        <hr class="mg-0" ng-show="showAddressContentActive == null">
+        <div class="structure-body pd-lt-15-force pd-rt-15-force">
+            <div class="overflow-limiter show-scroll">
+                <div class="row pd-bt-15">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-8 mg-bt-15 mg-tp-15">
+                                <span class="title">Hubs</span>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="hubs.length > 0">
+                            <div class="col-xs-12">
+                                <div class="card pd-tp-15 pd-bt-15 clearfix mg-bt-15" style="margin-left: 4px;">
+                                    <div class="col-xs-12 col-sm-6">
+                                        <span class="col-border-right bg-color black"></span>
+                                        <div class="form-group mg-bt-15" ng-class="{'is-focused': selectedHubDepartureIsFocused}">
+                                            <label class="control-label body-2 mg-bt-15" for="selectedHubDeparture" style="padding: 0;">
+                                                <span>Endereço de partida</span>
+                                            </label>
+                                            <div class="relative">
+                                                <div class="select-input">
+                                                    <select id="selectedHubDeparture"
+                                                            class="form-control pd-rt-30-force"
+                                                            name="selectedHubDeparture"
+                                                            ng-focus="selectedHubDepartureIsFocused = true"
+                                                            ng-blur="selectedHubDepartureIsFocused = false"
+                                                            ng-model="selectedHubDeparture">
+
+                                                        <option value="0">Nenhum</option>
+                                                        <option ng-repeat="hub in hubs" value="{{hub.id}}">{{hub.name}}</option>
+                                                    </select>
+
+                                                    <i class="material-icons caret">keyboard_arrow_down</i>
+
+                                                    <span class="material-input"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6" ng-show="selectedHubDeparture >= 0">
+                                        <h4 class="mg-0 color text-secondary-black">{{hubs[selectedHubDeparture - 1].address}}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="hubs.length > 0">
+                            <div class="col-xs-12">
+                                <div class="card pd-tp-15 pd-bt-15 clearfix mg-bt-15" style="margin-left: 4px;">
+                                    <div class="col-xs-12 col-sm-6">
+                                        <span class="col-border-right bg-color black"></span>
+                                        <div class="form-group mg-bt-15" ng-class="{'is-focused': selectedHubArrivalIsFocused}">
+                                            <label class="control-label body-2 mg-bt-15" for="selectedHubArrival" style="padding: 0;">
+                                                <span>Endereço de chegada</span>
+                                            </label>
+                                            <div class="relative">
+                                                <div class="select-input">
+                                                    <select id="selectedHubArrival"
+                                                            class="form-control pd-rt-30-force"
+                                                            name="selectedHubArrival"
+                                                            ng-focus="selectedHubArrivalIsFocused = true"
+                                                            ng-blur="selectedHubArrivalIsFocused = false"
+                                                            ng-model="selectedHubArrival">
+
+                                                        <option value="0">Nenhum</option>
+                                                        <option ng-repeat="hub in hubs" value="{{hub.id}}">{{hub.name}}</option>
+                                                    </select>
+
+                                                    <i class="material-icons caret">keyboard_arrow_down</i>
+
+                                                    <span class="material-input"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6" ng-show="selectedHubArrival >= 0">
+                                        <h4 class="mg-0 color text-secondary-black">{{hubs[selectedHubArrival - 1].address}}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="hubs.length == 0">
+                            <div class="col-xs-12 text-center">
+                                <div style="width: 180px;display: inline-block;opacity: 0.1;">
+                                    <svg x="0px" y="0px" viewBox="0 0 160 160" style="enable-background:new 0 0 160 160;" xml:space="preserve">
+                                        <rect x="78" y="-17" transform="matrix(0.7071 0.7071 -0.7071 0.7071 78.5858 -33.7229)" width="4" height="190"/>
+                                        <g>
+                                        	<path d="M46.5,103.7l29.3-29.3c-3.1-0.7-5.8-2.3-8.2-4.7c-3.4-3.4-5.1-7.6-5.1-12.5c0-4.9,1.7-9,5.1-12.5c3.4-3.4,7.6-5.1,12.5-5.1
+                                        		c4.9,0,9,1.7,12.5,5.1c2.4,2.4,3.9,5.1,4.7,8.2l23.8-23.8c-1.7-2.4-3.7-4.8-5.9-7c-9.6-9.6-21.3-14.4-35-14.4
+                                        		c-13.7,0-25.4,4.8-35,14.4s-14.4,21.3-14.4,35c0,6.9,1.8,14.8,5.3,23.9C39.1,89.5,42.6,97,46.5,103.7z"/>
+                                        	<path d="M81,74.8l-32.4,32.4c4.1,6.7,8.8,13.6,14.1,20.6c5.8,7.6,9.7,12.7,12,15.3c2.2,2.5,4,4.6,5.3,6.1l5.3-5.6
+                                        		c3.3-4,7.4-9.3,12.1-16.1c4.8-6.8,9.6-14,14.4-21.7c4.9-7.7,9-16,12.5-24.9c3.4-8.9,5.1-16.7,5.1-23.6c0-9.1-2.1-17.3-6.4-24.6
+                                        		L97.6,58.3"/>
+                                        </g>
+                                    </svg>
+                                </div>
+                                <span class="block full-width subheading mg-bt-30 color text-disabled-black">Nenhum hub cadastrado</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12" ng-class="{'text-right' : hubs.length > 0, 'text-center' : hubs.length == 0}">
+                                <a class="btn color-accent" href="#!/hubs" style="display: inline-block" ng-class="{'type-flat' : hubs.length > 0 }">
+                                    ir para lista de hubs
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="mg-bt-30">
+                <div class="row mg-tp-15 pd-bt-30">
+                    <div class="col-xs-12 col-sm-8 mg-bt-15">
+                        <span class="title">Veículos</span>
+                    </div>
+                    <div class="col-xs-12" ng-show="vehicles.length > 0">
+                        <div class="card pd-tp-15 pd-rt-15 pd-lt-15 mg-bt-15" style="margin-left: 4px">
+                            <span class="body-2 block mg-bt-15">Veículos disponíveis para a distribuição.</span>
+                            <div class="row" ng-repeat="vType in vTypes" ng-init="qtdeTypesModel[vType.id] = vType.qty; updateAvailableVehicles(qtdeTypesModel[vType.id], vType.id)" ng-show="vType.qty > 0">
+                                <div class="col-xs-12">
+                                    <div class="form-group flex-start center mg-bt-15" ng-class="{'is-focused': qtdeTypeIsFocused[vType.id]}">
+                                        <label class="control-label" for="type{{vType.id}}" style="width: 120px;">
+                                            <span>{{vType.plural}}</span>
+                                        </label>
+                                        <div class="relative clearfix" style="flex-shrink: 0; margin-right: 10px;">
+                                            <input id="type{{vType.id}}"
+                                                   class="form-control pd-rt-15 text-center"
+                                                   type="number"
+                                                   name="type{{vType.id}}"
+                                                   ng-model="qtdeTypesModel[vType.id]"
+                                                   ng-focus="qtdeTypeIsFocused[vType.id] = true"
+                                                   ng-blur="qtdeTypeIsFocused[vType.id] = false"
+                                                   max="{{vType.qty}}"
+                                                   min="0"
+                                                   ng-change="updateAvailableVehicles(qtdeTypesModel[vType.id], vType.id)"/>
+
+                                            <i class="form-control-feedback help-block material-icons">
+                                                <span class="color text-success" ng-show="baseInputsModel == 'asd'">check</span>
+                                                <span class="color" ng-show="baseInputsModel && baseInputsModel != 'asd'">error</span>
+                                            </i>
+                                            <span class="material-input"></span>
+                                        </div>
+                                        <span style="flex-shrink: 0">de {{vType.qty}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="vehicles.length == 0">
+                        <div class="col-xs-12 text-center">
+                            <div style="width: 180px;display: inline-block;opacity: 0.2;">
+                                <svg version="1.1" x="0px" y="0px"viewBox="0 0 160 160" style="enable-background:new 0 0 160 160;" xml:space="preserve">
+                                    <path class="st0" d="M108.6,61.3v17.9h31.3l-14.2-17.9H108.6z M111.6,76.2V64.3h12.7l9.4,11.9H111.6z"/>
+                                    <path class="st0" d="M29,120l2.1-2.1c-2.4-2.9-3.6-6.3-3.6-10.1v-1.5H15.4V41.7c0-2.8,1.1-5.2,3.2-7.4s4.6-3.2,7.4-3.2h82.6v9.3l3-3
+                                        v-9.3H26c-3.6,0-6.8,1.4-9.5,4.1c-2.7,2.7-4.1,5.9-4.1,9.5v67.6h12.1C24.8,113.3,26.3,116.9,29,120z"/>
+                                    <path class="st0" d="M128.8,52.3h-17.2v-2.6l32.2-32.2l-2.1-2.1L14.4,142.6l2.1,2.1l19.3-19.3c2.5,1.2,5.3,1.8,8.2,1.8
+                                        c5.3,0,9.9-1.9,13.7-5.8c3.5-3.5,5.4-7.6,5.7-12.2h33.1c0.3,4.6,2.3,8.8,5.7,12.2c3.8,3.8,8.4,5.8,13.7,5.8c5.3,0,9.9-1.9,13.7-5.8
+                                        c3.5-3.5,5.4-7.6,5.7-12.2h12.1V77.2L128.8,52.3z M51.2,110c-0.3,1.1-0.9,2.1-1.8,3c-0.9,0.9-1.9,1.6-3.1,1.9L51.2,110z
+                                         M144.6,106.3h-12.1v1.5c0,4.5-1.6,8.3-4.9,11.6s-7.1,4.9-11.6,4.9c-4.5,0-8.3-1.6-11.6-4.9c-3.3-3.3-4.9-7.1-4.9-11.6v-1.5h-39v1.5
+                                        c0,4.5-1.6,8.3-4.9,11.6c-3.3,3.3-7.1,4.9-11.6,4.9c-2.1,0-4.1-0.4-5.9-1.1l4.9-4.9c0.3,0,0.7,0,1,0c3,0,5.6-1.1,7.6-3.1
+                                        c2-2.1,2.9-4.5,2.9-7.4c0-0.3,0-0.7,0-1l54.1-54.1v2.6h18.8l17.2,22.9V106.3z"/>
+                                    <path class="st0" d="M116,97.3c-3,0-5.6,1.1-7.6,3.1c-2,2.1-2.9,4.5-2.9,7.4c0,2.8,1,5.3,2.9,7.4c2,2.1,4.5,3.1,7.6,3.1
+                                        c3,0,5.6-1.1,7.6-3.1c2-2.1,2.9-4.5,2.9-7.4c0-2.8-1-5.3-2.9-7.4C121.6,98.3,119,97.3,116,97.3z M121.4,113
+                                        c-1.4,1.5-3.2,2.2-5.4,2.2s-4-0.7-5.4-2.2l0,0c-1.4-1.5-2.1-3.2-2.1-5.3c0-2.1,0.7-3.8,2.1-5.3c1.4-1.5,3.2-2.2,5.4-2.2
+                                        s4,0.7,5.4,2.2c1.4,1.5,2.1,3.2,2.1,5.3C123.5,109.8,122.8,111.5,121.4,113z"/>
+                                    <path class="st0" d="M44,100.3c1.4,0,2.7,0.3,3.8,0.9l2.2-2.2c-1.7-1.2-3.7-1.8-5.9-1.8c-3,0-5.6,1.1-7.6,3.1
+                                        c-2,2.1-2.9,4.5-2.9,7.4c0,2.2,0.6,4.2,1.8,5.9l2.2-2.2c-0.6-1.1-1-2.4-1-3.7c0-2.1,0.7-3.8,2.1-5.3C40,101,41.8,100.3,44,100.3z"/>
+                                </svg>
+                            </div>
+                            <span class="block full-width subheading mg-bt-30 color text-disabled-black">Nenhum veículo cadastrado</span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12" ng-class="{ 'text-center' : vehicles.length == 0, 'text-right' : vehicles.length > 0 }">
+                        <a class="btn color-accent" href="#!vehicles" style="display: inline-block" ng-class="{'type-flat' : vehicles.length > 0 }">
+                            ir para lista veículos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="structure right" ng-show="scriptingStep == 2" style="width: 50%;">
+        <div class="structure-part pd-15 no-progress">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <span class="title">Resumo do processamento</span>
+                </div>
+            </div>
+        </div>
+        <div class="structure-part pd-15 no-progress">
+            <ul class="mg-0">
+                <li class="subheading color text-secondary-black">{{points.length}} endereços</li>
+                <li class="subheading color text-secondary-black" ng-repeat="vType in vTypes" ng-show="vType.qty > 0">
+                    <span ng-show="vType.qty == 1">{{qtyType[vType.id]}} {{vType.name}}</span>
+                    <span ng-show="vType.qty > 1">{{qtyType[vType.id]}} {{vType.plural}}</span>
+                </li>
+                <li class="subheading color text-secondary-black" ng-show="vehicles == 0">Nenhum veículo</li>
+                <li class="subheading color text-secondary-black" ng-show="selectedHubDeparture > 0">Partindo do hub {{hubs[selectedHubDeparture - 1].name}};</li>
+                <li class="subheading color text-secondary-black" ng-show="selectedHubArrival > 0">Retornando para o hub {{hubs[selectedHubArrival - 1].name}};</li>
+            </ul>
+        </div>
+        <hr class="full-width mg-tp-30 mg-bt-30">
+        <div class="structure-body no-progress">
+            <div class="overflow-limiter show-scroll" style="overflow-y: auto !important">
+                <div class="row" ng-show="!inProgress && !finishedP">
+                    <div class="col-xs-12 text-center mg-tp-30">
+                        <h3 class="color text-disabled-black">Nehuma roteirização em andamento</h3>
+                        <button class="btn mg-tp-30" ng-disabled="vehicles.length == 0" ng-click="startScriptingProcess()">
+                            iniciar roteirização
+                        </button>
+                        <p class="mg-tp-15 bpdy-2 color text-disabled-black" ng-show="vehicles.length == 0">Não é possível roteirizar sem veículos</p>
+                    </div>
+                </div>
+                <div class="row" ng-show="inProgress && !finishedP">
+                    <div class="col-xs-12 text-center">
+                        <h3>Processamento em andamento</h3>
+                        <div class="meter mg-tp-30 mg-bt-30">
+                            <span class="full-width" style="transition: transform 1s ease-in-out 0.1s; transform: translateX({{loadingScale * -1}}%)"></span>
+                        </div>
+                        <p class="body-2 text-secondary-black">As entregas estão sendo distribuídas entre os veículos selecioandos conforme seu endereço, peso, volume e valor.</p>
+                    </div>
+                </div>
+                <div class="row" ng-show="finishedP">
+                    <div class="col-xs-12 text-center">
+                        <h3>Processamento concluído</h3>
+                        <button class="btn mg-tp-30" ng-click="setStep(3); inProgress = false;">
+                            ir para resultado
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="structure left" ng-show="scriptingStep == 3" style="width: 50%;">
+        <div class="structure-part justify-children center pd-tp-10 pd-bt-10 pd-rt-15 pd-lt-15" ng-show="showAddressContentActive == null">
+            <div class="left">
+                <div class="step-title v-align-children">
+                    <span class="headline">Resultado do processamento</span>
+                    <div class="divider-v-30 mg-lt-15 mg-rt-15"></div>
+                    <span class="color text-disabled-black">Etapa 3 de 3</span>
+                </div>
+            </div>
+        </div>
+        <hr class="mg-0" ng-show="showAddressContentActive == null">
+        <div class="structure-body">
+            <div class="row justify-children">
+                <div class="col-xs-12">
+                    <span class="col-border-right bg-color black"></span>
+                    <ul class="list-group pd-0-force">
+                        <a class="list-item vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter0 | limitTo: qtyType0" ng-click="setActiveVehicle(vehicle.id)">
+                            <span class="caption color text-secondary-black">{{(vTypes | filter : {id: vehicle.type_id})[0].name }}</span>
+                            <span class="block full-width"></span>{{vehicle.licensePlate}}
+                        </a>
+                        <a class="list-item vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter1 | limitTo: qtyType1" ng-click="setActiveVehicle(vehicle.id)">
+                            <span class="caption color text-secondary-black">{{(vTypes | filter : {id: vehicle.type_id})[0].name }}</span>
+                            <span class="block full-width"></span>{{vehicle.licensePlate}}
+                        </a>
+                        <a class="list-item vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter2 | limitTo: qtyType2" ng-click="setActiveVehicle(vehicle.id)">
+                            <span class="caption color text-secondary-black">{{(vTypes | filter : {id: vehicle.type_id})[0].name }}</span>
+                            <span class="block full-width"></span>{{vehicle.licensePlate}}
+                        </a>
+                        <a class="list-item vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter3 | limitTo: qtyType3" ng-click="setActiveVehicle(vehicle.id)">
+                            <span class="caption color text-secondary-black">{{(vTypes | filter : {id: vehicle.type_id})[0].name }}</span>
+                            <span class="block full-width"></span>{{vehicle.licensePlate}}
+                        </a>
+                    </ul>
+                </div>
+                <div class="col-xs-12">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid tempora, minus, numquam accusamus vitae, optio cupiditate distinctio soluta molestiae suscipit est iste. Ipsum quisquam iure repellendus vero dolorem officiis, perferendis sed hic animi reprehenderit, aspernatur odit cum? Nesciunt omnis, dolore modi amet et molestiae, veniam cumque ab ipsa vitae consectetur repellat, eaque repudiandae. Eveniet, corporis vero nisi doloremque cumque non minima deserunt veritatis dolores quam suscipit laboriosam, beatae molestiae iure. Mollitia, officia quae necessitatibus nihil adipisci a id ea quisquam alias! Sequi architecto illum consequuntur explicabo ipsum. Explicabo nisi officiis maxime asperiores omnis sequi libero, eligendi laboriosam beatae, quae, pariatur.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="structure right" ng-show="scriptingStep == 3" style="width: 50%;">
+        <div class="fake-map bg-color body-bg">
+
+        </div>
+    </div>
+</div>
+
+<div class="modal" ng-class="{'active' : modalToSelectFile}">
+    <div class="modal-dialog modal-sm" style="height: 430px;">
+        <div class="modal-content">
+            <div class="structure">
+                <div class="structure-header" style="flex-shrink: 0">
+                    <div class="left">
+                        <div class="texts">
+                            <span class="title color text-primary">Importar dados</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="structure-body pd-lt-15-force pd-rt-15-force">
+                    <div class="pd-15">
+                        <span>Selecione um arquivo <b>(.csv)</b></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 mg-bt-15" ng-show="!somePointsAdded">
+                            <button class="btn type-flat mini text-center pd-tp-15-force pd-bt-5-force full-width" ng-class="{'active' : thisIsActive == 1}" ng-click="thisIsActive = 1">
+                                <img src="static/imgs/csv.png" alt="" style="width: 48px; display: initial" class="mg-bt-5">
+                                <span style="white-space: normal; display: block; text-transform: lowercase;">entregas.csv</span>
+                            </button>
+                        </div>
+                        <div class="col-xs-6 mg-bt-15">
+                            <button class="btn type-flat mini text-center pd-tp-15-force pd-bt-5-force full-width" ng-class="{'active' : thisIsActive == 2}" ng-click="thisIsActive = 2">
+                                <img src="static/imgs/rar.png" alt="" style="width: 48px; display: initial; filter: grayscale(1); opacity: 0.5" class="mg-bt-5">
+                                <span style="white-space: normal; display: block; text-transform: lowercase;">classicos.rar</span>
+                            </button>
+                        </div>
+                        <div class="col-xs-6">
+                            <button class="btn type-flat mini text-center pd-tp-15-force pd-bt-5-force full-width" ng-class="{'active' : thisIsActive == 3}" ng-click="thisIsActive = 3">
+                                <img src="static/imgs/rar.png" alt="" style="width: 48px; display: initial; filter: grayscale(1); opacity: 0.5" class="mg-bt-5">
+                                <span style="white-space: normal; display: block; text-transform: lowercase;">cruzeiro.rar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="structure-footer" style="flex-shrink: 0">
+                    <div class="right">
+                        <div class="btn-group">
+                            <button class="btn type-flat" ng-click="modalToSelectFile = false">
+                                voltar
+                            </button>
+                            <button class="btn" ng-click="selectThisFileAndImport()" ng-disabled="thisIsActive != 1">
+                                importar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop" ng-class="{'active' : modalToSelectFile}" ng-click="modalToSelectFile = false"></div>
+
+<style>
+
+    .overflow-limiter.show-scroll::-webkit-scrollbar {
+        width: auto !important;
+    }
+    .overflow-limiter.show-scroll {
+        margin-right: -15px;
+        padding-right: 15px;
+        overflow-y: scroll !important;
+    }
+
+</style>
+
+<style>
+    .meter {
+        height: 20px;  /* Can be anything */
+        position: relative;
+        background: #afafaf;
+        border-radius: 25px;
+        box-shadow: inset 0 -1px 1px rgba(255,255,255,0.3);
+        overflow: hidden;
+    }
+    .meter > span {
+        display: block;
+        height: 100%;
+        height: 20px;  /* Can be anything */
+        border-radius: 25px 10px 10px 25px;
+        background-color: #009688;
+        position: relative;
+        overflow: hidden;
+    }
+    .meter > span:after, .animate > span > span {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; bottom: 0; right: 0;
+        background-image:
+           -webkit-gradient(linear, 0 0, 100% 100%,
+              color-stop(.25, rgba(255, 255, 255, .2)),
+              color-stop(.25, transparent), color-stop(.5, transparent),
+              color-stop(.5, rgba(255, 255, 255, .2)),
+              color-stop(.75, rgba(255, 255, 255, .2)),
+              color-stop(.75, transparent), to(transparent)
+           );
+        background-image:
+            -moz-linear-gradient(
+              -45deg,
+              rgba(255, 255, 255, .2) 25%,
+              transparent 25%,
+              transparent 50%,
+              rgba(255, 255, 255, .2) 50%,
+              rgba(255, 255, 255, .2) 75%,
+              transparent 75%,
+              transparent
+           );
+        z-index: 1;
+        -webkit-background-size: 50px 50px;
+        -moz-background-size: 50px 50px;
+        -webkit-animation: move 2s linear infinite;
+           -webkit-border-top-right-radius: 8px;
+        -webkit-border-bottom-right-radius: 8px;
+               -moz-border-radius-topright: 8px;
+            -moz-border-radius-bottomright: 8px;
+                   border-top-right-radius: 8px;
+                border-bottom-right-radius: 8px;
+            -webkit-border-top-left-radius: 20px;
+         -webkit-border-bottom-left-radius: 20px;
+                -moz-border-radius-topleft: 20px;
+             -moz-border-radius-bottomleft: 20px;
+                    border-top-left-radius: 20px;
+                 border-bottom-left-radius: 20px;
+        overflow: hidden;
+    }
+
+    .animate > span:after {
+        display: none;
+    }
+
+    @-webkit-keyframes move {
+        0% {
+           background-position: 0 0;
+        }
+        100% {
+           background-position: 50px 50px;
+        }
+    }
+</style>

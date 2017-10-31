@@ -1,0 +1,551 @@
+<div class="row">
+    <div class="col-xs-12 space-between center">
+        <h1>Veículos</h1>
+        <div class="hidden-button-on-scroll" ng-class="{'show' : !showFab && !showAddVehicle}" ng-show="vehicles.length > 0">
+            <button class="btn type-flat mg-rt-15" ng-click="openEditTypeModal(0)">
+                gerenciar tipos de veículo
+            </button>
+            <button class="btn color-accent createButton" ng-click="showAddVehiclePanel()">
+                + cadastrar veículo
+            </button>
+        </div>
+    </div>
+</div>
+<div class="row without-right-spacing">
+    <div class="col-xs-12 text-center" ng-show="vehicles.length == 0 && loadingVehicles == false">
+        <div style="width: 180px;display: inline-block;opacity: 0.2;margin-top: 90px;">
+            <svg version="1.1" x="0px" y="0px"viewBox="0 0 160 160" style="enable-background:new 0 0 160 160;" xml:space="preserve">
+                <path class="st0" d="M108.6,61.3v17.9h31.3l-14.2-17.9H108.6z M111.6,76.2V64.3h12.7l9.4,11.9H111.6z"/>
+                <path class="st0" d="M29,120l2.1-2.1c-2.4-2.9-3.6-6.3-3.6-10.1v-1.5H15.4V41.7c0-2.8,1.1-5.2,3.2-7.4s4.6-3.2,7.4-3.2h82.6v9.3l3-3
+                	v-9.3H26c-3.6,0-6.8,1.4-9.5,4.1c-2.7,2.7-4.1,5.9-4.1,9.5v67.6h12.1C24.8,113.3,26.3,116.9,29,120z"/>
+                <path class="st0" d="M128.8,52.3h-17.2v-2.6l32.2-32.2l-2.1-2.1L14.4,142.6l2.1,2.1l19.3-19.3c2.5,1.2,5.3,1.8,8.2,1.8
+                	c5.3,0,9.9-1.9,13.7-5.8c3.5-3.5,5.4-7.6,5.7-12.2h33.1c0.3,4.6,2.3,8.8,5.7,12.2c3.8,3.8,8.4,5.8,13.7,5.8c5.3,0,9.9-1.9,13.7-5.8
+                	c3.5-3.5,5.4-7.6,5.7-12.2h12.1V77.2L128.8,52.3z M51.2,110c-0.3,1.1-0.9,2.1-1.8,3c-0.9,0.9-1.9,1.6-3.1,1.9L51.2,110z
+                	 M144.6,106.3h-12.1v1.5c0,4.5-1.6,8.3-4.9,11.6s-7.1,4.9-11.6,4.9c-4.5,0-8.3-1.6-11.6-4.9c-3.3-3.3-4.9-7.1-4.9-11.6v-1.5h-39v1.5
+                	c0,4.5-1.6,8.3-4.9,11.6c-3.3,3.3-7.1,4.9-11.6,4.9c-2.1,0-4.1-0.4-5.9-1.1l4.9-4.9c0.3,0,0.7,0,1,0c3,0,5.6-1.1,7.6-3.1
+                	c2-2.1,2.9-4.5,2.9-7.4c0-0.3,0-0.7,0-1l54.1-54.1v2.6h18.8l17.2,22.9V106.3z"/>
+                <path class="st0" d="M116,97.3c-3,0-5.6,1.1-7.6,3.1c-2,2.1-2.9,4.5-2.9,7.4c0,2.8,1,5.3,2.9,7.4c2,2.1,4.5,3.1,7.6,3.1
+                	c3,0,5.6-1.1,7.6-3.1c2-2.1,2.9-4.5,2.9-7.4c0-2.8-1-5.3-2.9-7.4C121.6,98.3,119,97.3,116,97.3z M121.4,113
+                	c-1.4,1.5-3.2,2.2-5.4,2.2s-4-0.7-5.4-2.2l0,0c-1.4-1.5-2.1-3.2-2.1-5.3c0-2.1,0.7-3.8,2.1-5.3c1.4-1.5,3.2-2.2,5.4-2.2
+                	s4,0.7,5.4,2.2c1.4,1.5,2.1,3.2,2.1,5.3C123.5,109.8,122.8,111.5,121.4,113z"/>
+                <path class="st0" d="M44,100.3c1.4,0,2.7,0.3,3.8,0.9l2.2-2.2c-1.7-1.2-3.7-1.8-5.9-1.8c-3,0-5.6,1.1-7.6,3.1
+                	c-2,2.1-2.9,4.5-2.9,7.4c0,2.2,0.6,4.2,1.8,5.9l2.2-2.2c-0.6-1.1-1-2.4-1-3.7c0-2.1,0.7-3.8,2.1-5.3C40,101,41.8,100.3,44,100.3z"/>
+            </svg>
+        </div>
+        <span class="block full-width subheading mg-bt-30 pd-bt-30 color text-disabled-black">Nenhum veículo cadastrado</span>
+        <div class="btn-group">
+            <button class="btn type-flat mg-rt-5" ng-click="openEditTypeModal(0)">
+                gerenciar tipos de veículo
+            </button>
+            <button class="btn color-accent" ng-click="showAddVehiclePanel()">
+                + cadastrar veículo
+            </button>
+        </div>
+
+    </div>
+    <div class="col-xs-12 col-xssm-6 pd-15 v-align-children" ng-show="vehicles.length > 0">
+        <div class="mg-rt-30" style="padding-top: 7px;">
+            <div class="form-group checkbox mg-0-force">
+                <div class="content">
+                    <input id="showVehicleDetails" class="form-control mg-0" type="checkbox" name="showVehicleDetails" ng-model="showVehicleDetails" ng-disabled="!showDetailsControl">
+                    <div class="checkbox-icons text-left">
+                        <i class="material-icons">check_box_outline_blank</i>
+                        <i class="material-icons">check_box</i>
+                    </div>
+                    <label class="control-label reacts-btn-icon-24 text-nowrap" for="showVehicleDetails" ng-class="{'color text-disabled-black' : !showDetailsControl}">Mostrar detalhes dos veículos</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-xssm-6 text-right pd-15 v-align-children" ng-show="vehicles.length > 0">
+        <div class="v-align-children">
+            <span class="mg-rt-5">Ordenar</span>
+            <div class="form-group mg-0-force" ng-class="{'is-focused': selectOrderIsFocused}" style="width: 200px;">
+                <div class="relative">
+                    <div class="select-input">
+                        <select id="orderVehicles"
+                                class="form-control pd-rt-30-force"
+                                name="orderVehicles"
+                                ng-focus="selectOrderIsFocused = true"
+                                ng-blur="selectOrderIsFocused = false"
+                                ng-model="propertyName">
+
+                            <option value="-id">Cadastro mais recente</option>
+                            <option value="licensePlate">Placa (A-Z)</option>
+                            <option value="-licensePlate">Placa (Z-A)</option>
+                            <option value="maxValue">Valor max.(menor para maior)</option>
+                            <option value="-maxValue">Valor max.(maior para menor)</option>
+                            <option value="type_id">Separar por tipo</option>
+                        </select>
+
+                        <i class="material-icons caret">keyboard_arrow_down</i>
+
+                        <span class="material-input"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn type-flat mini mg-lt-30" ng-click="showMezzanine = true; showFilter = true; $root.mezzanineIsActive = true" ng-show="!showFilter">
+            <span>Filtros</span>
+        </button>
+    </div>
+    <div class="pull-left loading empty" ng-show="loadingVehicles"></div>
+    <div class="col-xs-12"
+         ng-repeat="v in vehicles | orderBy:propertyName"
+         ng-show="filterTypes[v.type_id]"
+         ng-class="{'col-md-4 col-lg-3 col-xlg-2' : !showMezzanine, 'col-sm-6 col-xlg-4' : showMezzanine}">
+
+        <div class="card mg-bt-15 vehicle-{{v.id}}" ng-class="{'interactive active' : vehicleAdded == v.id}">
+            <div class="card-header center" ng-show="vehicleActive != v.id">
+                <div class="left cursor-pointer">
+                    <div style="width: 36px; height: 36px;" ng-include="'static/templates/vehicle-icons.html'" ng-init="showIconByType = v.type_id; iconCOlor"></div>
+                    <div class="texts" style="max-width: 100%;">
+                        <span class="subheading" style="margin: 0" title="{{v.licensePlate}}">{{v.licensePlate}}</span>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="btn-group text-right">
+                        <div class="dropdown on-hover">
+                            <button class="btn type-flat icon-24">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                            <ul class="list-group dropdown-menu right animated text-left pd-0" style="transform-origin: 0 0 0;">
+                                <li class="list-item pd-0-force">
+                                    <a href="" ng-click="showEditItem(v);">EDITAR</a>
+                                </li>
+                                <li class="list-item pd-0-force" ng-click="confirmDelete(v, v.licensePlate)">
+                                    <a href="">EXCLUIR VEÍCULO</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body pd-bt-15 pd-lt-15 pd-rt-15" ng-show="showVehicleDetails">
+                <div class="row pd-tp-15" ng-show="vehicleActive == v.id">
+                    <div class="col-xs-12">
+                        <div class="form-group" ng-class="{'is-focused': vehicleLicensePlateIsFocused }">
+                            <div class="relative clearfix">
+                                <input id="vehicleLicensePlate-{{v.id}}"
+                                       class="form-control subheading"
+                                       type="text"
+                                       name="vehicleLicensePlate"
+                                       ng-model="v.licensePlate"
+                                       placeholder="Placa"
+                                       ng-focus="vehicleLicensePlateIsFocused = true"
+                                       ng-blur="vehicleLicensePlateIsFocused = false" maxlength="8"
+                                       onfocus="this.select()"
+                                       style="padding: 0; border-radius: 0; border-width: 0 0  1px 0;"/>
+
+                                <span class="material-input"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group mg-bt-15" ng-class="{'is-focused': vehicleMaxValueIsFocused }">
+                            <label class="control-label" for="vehicleMaxValue">
+                                <span>Valor max. <span class="hidden-md-down">assegurado</span></span>
+                            </label>
+                            <div class="relative clearfix">
+                                <input id="vehicleMaxValue-{{v.id}}"
+                                       class="form-control"
+                                       type="number"
+                                       name="vehicleMaxValue"
+                                       ng-model="v.maxValue"
+                                       placeholder="Valor max. assegurado"
+                                       ng-focus="vehicleMaxValueIsFocused = true"
+                                       ng-blur="vehicleMaxValueIsFocused = false"
+                                       onfocus="this.select()"/>
+
+                                <span class="material-input"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group mg-bt-5" ng-class="{'is-focused': selectVehicleTypeIsFocused}">
+                            <label class="control-label" for="select-vehicle-type">
+                                <span>Tipo</span>
+                            </label>
+                            <div class="relative">
+                                <div class="select-input">
+                                    <select id="vehicletype-{{v.id}}"
+                                            class="form-control"
+                                            name="select-vehicle-type"
+                                            ng-focus="selectVehicleTypeIsFocused = true"
+                                            ng-blur="selectVehicleTypeIsFocused = false"
+                                            ng-model="v.type_id">
+
+
+                                            <option value="{{vType.id}}" ng-repeat="vType in vTypes" ng-selected="vType.id == v.type_id">{{vType.name}}</option>
+
+                                    </select>
+
+                                    <i class="material-icons caret">keyboard_arrow_down</i>
+
+                                    <span class="material-input"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 text-right">
+                        <button class="btn type-flat mini" ng-click="openEditTypeModal(v.type_id)">
+                            <span class="caption">editar tipo {{(vTypes | filter : {id: v.type_id})[0].name }}</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-show="vehicleActive != v.id">
+                    <div class="col-xs-12">
+                        <span class="block text-uppercase caption color text-secondary-black">Valor max. assegurado</span>
+                        <span class="caption text-nowrap">R$ {{v.maxValue}},00</span>
+                    </div>
+                    <div class="col-xs-12">
+                        <hr class="mg-tp-15 mg-bt-15">
+                        <div class="v-align-children">
+                            <span class="block text-uppercase caption color text-secondary-black mg-rt-5">Tipo</span>
+                            <div class="chip">
+                                <span>{{(vTypes | filter : {id: v.type_id})[0].name }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 mg-tp-15">
+                        <span class="block text-uppercase caption color text-secondary-black">Peso max.</span>
+                        <span class="caption text-nowrap">{{(vTypes | filter : {id: v.type_id})[0].maxWeight }}kg</span>
+                    </div>
+                    <div class="col-xs-12 mg-tp-15">
+                        <span class="block text-uppercase caption color text-secondary-black">Volume max.</span>
+                        <span class="caption text-nowrap">{{(vTypes | filter : {id: v.type_id})[0].maxVolume}}m³</span>
+                    </div>
+                    <div class="col-xs-12 mg-tp-15">
+                        <span class="block text-uppercase caption color text-secondary-black">Dimensão max.</span>
+                        <span class="caption text-nowrap">{{(vTypes | filter : {id: v.type_id})[0].maxDim}}m</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer" ng-show="vehicleActive == v.id" style="padding-top: 4px;">
+                <div class="right">
+                    <div class="btn-group text-right">
+                        <button class="btn" ng-click="saveEdit(v)" ng-disabled="disableSaveButton">
+                            salvar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mezzanine bg-color white" ng-class="{'active' : showMezzanine}">
+    <div class="structure" ng-show="showFilter">
+        <div class="structure-header center">
+            <div class="left">
+                <div class="texts">
+                    <span class="headline">Filtros</span>
+                </div>
+            </div>
+            <div class="right">
+                <button class="btn type-flat icon-24" ng-click="showFilter = false; showMezzanine = false; $root.mezzanineIsActive = false">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
+        </div>
+        <div class="structure-body">
+            <div class="overflow-limiter">
+                <div class="row">
+                    <div class="col-xs-12 mg-bt-15">
+                        <span class="subheading">Tipos exibidos</span>
+                    </div>
+                    <div class="col-xs-12" ng-repeat="vType in vTypes" ng-init="filterTypes[vType.id] = true">
+                        <div class="form-group checkbox mg-bt-0">
+                            <div class="content pd-tp-5 pd-lt-15 pd-bt-5 pd-rt-15">
+                                <div class="mg-rt-15" style="width: 24px; height: 24px;" ng-include="'static/templates/vehicle-icons.html'" ng-init="showIconByType = vType.id"></div>
+                                <label class="control-label mg-lt-5" for="showType{{vType.id}}">{{vType.name}}</label>
+                                <input id="showType{{vType.id}}" class="form-control mg-0" type="checkbox" name="showType{{vType.id}}" ng-model="filterTypes[vType.id]">
+                                <div class="checkbox-icons text-left pull-right">
+                                    <i class="material-icons color text-disabled-black">visibility</i>
+                                    <i class="material-icons color text-secondary-black">visibility</i>
+                                </div>
+                                <span class="subheading pull-right mg-rt-30" style="margin-top: 3px;">{{vType.qty}}</span>
+                            </div>
+                        </div>
+                        <hr class="mg-bt-5" ng-show="!$last">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fab-group bottom-to-top hidden-fab-on-scroll" ng-class="{'show' : showFab}" style="width: 56px;height: 56px;transform-origin: 50% 50%;">
+    <button class="btn type-fab color-accent fab-content-toggle" ng-click="showAddVehiclePanel()" ng-class="{'active' : showAddVehicle}">
+        <i class="material-icons click-fab-icon">add</i>
+    </button>
+</div>
+
+<div class="fab-content bottom" ng-class="{'active' : showAddVehicle}">
+    <form class="structure" ng-submit="addVehicle()" ng-class="{'loading' : addLoading}">
+        <div class="structure-header center">
+            <div class="left">
+                <span class="title">+ Veículo</span>
+            </div>
+            <div class="right">
+                <button class="btn type-flat icon-24" ng-click="closeAddVehicle()" type="button">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
+        </div>
+        <div class="structure-body">
+            <div class="overflow-limiter">
+                <div class="form-group" ng-class="{'is-focused': newVehicleLicensePlateIsFocused }">
+                    <label class="control-label" for="newVehicleLicensePlate">
+                        <span>Placa</span>
+                    </label>
+                    <div class="relative clearfix">
+                        <input id="newVehicleLicensePlate"
+                               class="form-control"
+                               type="text"
+                               name="newVehicleLicensePlate"
+                               ng-model="newVehicleLicensePlate"
+                               ng-focus="newVehicleLicensePlateIsFocused = true"
+                               ng-blur="newVehicleLicensePlateIsFocused = false" maxlength="8" tabindex="1"/>
+
+                        <span class="material-input"></span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'is-focused': newVehicleTypeIsFocused}">
+                    <label class="control-label" for="select-vehicle-type">
+                        <span>Tipo</span>
+                    </label>
+                    <div class="relative">
+                        <div class="select-input">
+                            <select id="select-vehicle-type"
+                                    class="form-control"
+                                    name="select-vehicle-type"
+                                    ng-focus="newVehicleTypeIsFocused = true"
+                                    ng-blur="newVehicleTypeIsFocused = false"
+                                    ng-model="newVehicleTypeId" tabindex="2">
+
+                                    <option value="{{vType.id}}" ng-repeat="vType in vTypes" ng-selected="vType.id == vehicle.type_id">{{vType.name}}</option>
+
+                            </select>
+
+                            <i class="material-icons caret">keyboard_arrow_down</i>
+
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'is-focused': newVehicleMaxValueIsFocused }">
+                    <label class="control-label" for="newVehicleMaxValue">
+                        <span>Valor max. <span class="hidden-md-down">assegurado</span></span>
+                    </label>
+                    <div class="relative clearfix">
+                        <input id="newVehicleMaxValue"
+                               class="form-control"
+                               type="text"
+                               name="newVehicleMaxValue"
+                               ng-model="newVehicleMaxValue"
+                               ng-focus="newVehicleMaxValueIsFocused = true"
+                               ng-blur="newVehicleMaxValueIsFocused = false" tabindex="3"/>
+
+                        <span class="material-input"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="structure-footer center" style="flex-shrink: 0">
+            <div class="left">
+                <div class="form-group checkbox mg-bt-0">
+                    <div class="content">
+                        <input id="continueAddVehicle" class="form-control mg-0" type="checkbox" name="continueAddVehicle" ng-model="continueAddVehicle">
+                        <div class="checkbox-icons text-left">
+                            <i class="material-icons">check_box_outline_blank</i>
+                            <i class="material-icons">check_box</i>
+                        </div>
+                        <label class="control-label mg-lt-5" for="continueAddVehicle">+1</label>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <div class="btn-group text-right">
+                    <button class="btn type-flat" type="button" ng-click="closeAddVehicle()" tabindex="5">
+                        descartar
+                    </button>
+                    <button class="btn" type="submit" tabindex="4" ng-disabled="!newVehicleLicensePlate || !newVehicleTypeId || !newVehicleMaxValue">
+                        salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal" ng-class="{'active' : showDeleteDialog, 'loading' : deleteLoading}" style="position: fixed;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="structure" style="height: auto;">
+                <div class="structure-header no-border">
+                    <div class="left">
+                        <div class="texts">
+                            <span class="subheading">Excluir veículo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="structure-part pd-lt-30 pd-rt-30">
+                    <p>Deseja mesmo excluir o veículo <span class="text-nowrap">{{vehicleToDeleteName}}</span>?</p>
+                </div>
+                <div class="structure-footer no-border">
+                    <div class="right">
+                        <button class="btn type-flat" ng-click="cancelDelete()">
+                            voltar
+                        </button>
+                        <button class="btn type-flat color-primary" ng-click="deleteVehicle(vehicleToDelete)">
+                            Excluir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop" ng-class="{'active' : showDeleteDialog}"></div>
+
+<div class="modal" ng-class="{'active' : setModalVisible == true}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="structure">
+                <div class="structure-header center" style="flex-shrink: 0;">
+                    <div class="left">
+                        <div class="texts">
+                            <span class="title">Tipos de veículo</span>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <button class="btn type-flat icon-24" ng-click="setModalVisible = false">
+                            <i class="material-icons">close</i>
+                        </button>
+                    </div>
+                </div>
+                <div class="structure-body pd-lt-15-force pd-rt-15-force">
+                    <div class="overflow-limiter show-scroll pull-left" style="width: 30%; overflow: auto !important;border-right: 1px solid rgba(0,0,0,0.12); padding-right: 0; margin-right: 0;">
+                        <ul class="list-group pd-0-force">
+                            <a class="list-item vType-{{vType.id}}" ng-repeat="vType in vTypes" ng-click="setActiveType(vType.id)" ng-class="{'active' : activeType == vType.id}">
+                                {{vType.name}}
+                            </a>
+                        </ul>
+                    </div>
+                    <div class="structure pull-left pd-0-force" style="width: 70%;">
+                        <div class="structure-body" style="padding-right: 17px;padding-left: 0;border-left: 4px solid #e91e63;border-radius: 0;margin-left: -1px;">
+                            <div class="overflow-limiter show-scroll" style="overflow: auto !important">
+                                <div class="pd-lt-30 pd-rt-30">
+                                    <div class="row" ng-repeat="vType in vTypes" ng-show="activeType == vType.id">
+                                        <div class="col-xs-12 col-xssm-8">
+                                            <div class="form-group mg-bt-15" ng-class="{'is-focused': vTypeNameIsFocused }">
+                                                <label class="control-label" for="vTypeName-{{vType.id}}" tabindex="-1">
+                                                    <span>Nome</span>
+                                                </label>
+                                                <div class="relative clearfix">
+                                                    <input id="vTypeName-{{vType.id}}"
+                                                           class="form-control"
+                                                           type="text"
+                                                           name="vTypeName-{{vType.id}}"
+                                                           ng-model="vType.name"
+                                                           ng-focus="vTypeNameIsFocused = true"
+                                                           ng-blur="vTypeNameIsFocused = false;"
+                                                           ng-change="updateType(vType)" tabindex="6"/>
+
+                                                    <span class="material-input"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-xssm-8">
+                                            <div class="form-group mg-bt-15" ng-class="{'is-focused': vTypeMaxWeightIsFocused }">
+                                                <label class="control-label" for="vTypeMaxWeight-{{vType.id}}" tabindex="-1">
+                                                    <span>Peso máximo</span>
+                                                </label>
+                                                <div class="relative clearfix">
+                                                    <input id="vTypeMaxWeight-{{vType.id}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           name="vTypeMaxWeight-{{vType.id}}"
+                                                           ng-model="vType.maxWeight"
+                                                           ng-focus="vTypeMaxWeightIsFocused = true"
+                                                           ng-blur="vTypeMaxWeightIsFocused = false;"
+                                                           ng-change="updateType(vType)" tabindex="7" min="0"/>
+
+                                                    <span class="help-block color text-secondary-black">Peso máximo em Kg (apenas números)</span>
+                                                    <span class="material-input"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-xssm-8">
+                                            <div class="form-group mg-bt-15" ng-class="{'is-focused': vTypeMaxVolumeIsFocused }">
+                                                <label class="control-label" for="vTypeMaxVolume-{{vType.id}}" tabindex="-1">
+                                                    <span>Volume máximo</span>
+                                                </label>
+                                                <div class="relative clearfix">
+                                                    <input id="vTypeMaxVolume-{{vType.id}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           name="vTypeMaxVolume-{{vType.id}}"
+                                                           ng-model="vType.maxVolume"
+                                                           ng-focus="vTypeMaxVolumeIsFocused = true"
+                                                           ng-blur="vTypeMaxVolumeIsFocused = false;"
+                                                           ng-change="updateType(vType)" tabindex="8" min="0"/>
+
+                                                    <span class="help-block color text-secondary-black">Volume em cm³ (apenas números)</span>
+                                                    <span class="material-input"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-xssm-8">
+                                            <div class="form-group mg-bt-15" ng-class="{'is-focused': vTypeMaxDimIsFocused }">
+                                                <label class="control-label" for="vTypeMaxDim-{{vType.id}}" tabindex="-1">
+                                                    <span>Dimensão máxima</span>
+                                                </label>
+                                                <div class="relative clearfix">
+                                                    <input id="vTypeMaxDim-{{vType.id}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           name="vTypeMaxDim-{{vType.id}}"
+                                                           ng-model="vType.maxDim"
+                                                           ng-focus="vTypeMaxDimIsFocused = true"
+                                                           ng-blur="vTypeMaxDimIsFocused = false;"
+                                                           ng-change="updateType(vType)" tabindex="9" min="0"/>
+
+                                                    <span class="help-block color text-secondary-black">Dimensão máxima de carga em <b>m</b> (apenas números)</span>
+                                                    <span class="material-input"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <span><span ng-show="vType.qty < 1">Nenhum</span><span ng-show="vType.qty >= 1">{{vType.qty}}</span> veículo<span ng-show="vType.qty > 1">s</span> cadastrado<span ng-show="vType.qty > 1">s</span> desse tipo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="structure-footer" style="flex-shrink: 0;">
+                            <div class="right">
+                                <span class="body-2 color text-disabled-black">* qualquer alteração será salva automaticamente</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop" ng-class="{'active' : setModalVisible == true}"></div>
+
+<style>
+
+    .overflow-limiter.show-scroll::-webkit-scrollbar {
+        width: auto !important;
+    }
+    .overflow-limiter.show-scroll {
+        margin-right: -15px;
+        padding-right: 15px;
+        overflow-y: scroll !important;
+    }
+
+</style>

@@ -1,0 +1,94 @@
+<nav class="main-nav" ng-class="{'open' : menuExpanded}">
+    <div class="my-logo">
+        <a href="" class="block">
+            <img class="bg-color white" style="width: 180px;" ng-src="static/imgs/logo.jpg"/>
+        </a>
+    </div>
+    <aside class="sidebar-navigation">
+        <div class="top-options visible-opened-menu pd-tp-30">
+            <div class="btn-group text-right pull-right">
+                <button class="btn type-flat icon-24" ng-click="menuExpanded = false; $root.mezzanineIsActive = false">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
+        </div>
+        <ul>
+            <li class="fixed-button">
+                <a class="v-align-children menu-btn visible-closed-menu"
+                   href=""
+                   ng-click="menuExpanded = true"
+                   ng-attr-uib-tooltip="{{ !menuExpanded ? 'Expandir menu' : undefined }}" tooltip-append-to-body="true" tooltip-placement="right">
+
+                    <i class="material-icons sz-18">menu</i>
+                </a>
+            </li>
+            <li class="pull-left-sm-down pd-lt-15-md-up pd-rt-15-md-up">
+                <a class="v-align-children text-nowrap diamond-bg-icon-parent"
+                   href="#!"
+                   ng-click="menuExpanded = false; $root.mezzanineIsActive = false"
+                   ng-class="{'active' : $route.current.scope.name == 'scriptings' }"
+                   ng-attr-uib-tooltip="{{ !menuExpanded ? 'Roteirizações' : undefined }}" tooltip-append-to-body="true" tooltip-placement="right">
+
+                    <i class="material-icons sz-18">view_carousel</i>
+                    <span class="hidden-sm-down-force" translate>Roteirizações</span>
+                    <span class="hidden-md-up-force small-text mg-tp-15 text-uppercase caption"
+                          translate>Roteirizações</span>
+                    <span class="active-highlighter"></span>
+                </a>
+            </li>
+            <li class="pd-lt-15 pd-rt-15"><hr></li>
+            <!-- <li class="pull-left-sm-down pd-lt-15-md-up pd-rt-15-md-up relative">
+                <a href="" class="v-align-children text-nowrap">
+                    <i class="material-icons sz-18 color text-disabled-black">settings</i>
+                    <span class="hidden-sm-down-force" translate>Configurações</span>
+                    <span class="hidden-md-up-force small-text mg-tp-15 text-uppercase caption"
+                          translate>Configurações</span>
+                </a>
+            </li> -->
+            <li class="pull-left-sm-down pd-lt-15-md-up pd-rt-15-md-up">
+                <a class="v-align-children text-nowrap diamond-bg-icon-parent"
+                   href="#!vehicles"
+                   ng-click="menuExpanded = false; $root.mezzanineIsActive = false"
+                   ng-class="{'active' : $route.current.scope.name == 'vehicles' }"
+                   ng-attr-uib-tooltip="{{ !menuExpanded ? 'Veículos' : undefined }}" tooltip-append-to-body="true" tooltip-placement="right">
+
+                    <i class="material-icons sz-18">local_shipping</i>
+                    <span class="hidden-sm-down-force" translate>Veículos</span>
+                    <span class="hidden-md-up-force small-text mg-tp-15 text-uppercase caption"
+                          translate>Veículos</span>
+                    <span class="active-highlighter"></span>
+                </a>
+            </li>
+            <li class="pull-left-sm-down pd-lt-15-md-up pd-rt-15-md-up">
+                <a class="v-align-children text-nowrap diamond-bg-icon-parent"
+                   href="#!hubs"
+                   ng-click="menuExpanded = false; $root.mezzanineIsActive = false"
+                   ng-class="{'active' : $route.current.scope.name == 'hubs' }"
+                   ng-attr-uib-tooltip="{{ !menuExpanded ? 'Hubs' : undefined }}" tooltip-append-to-body="true" tooltip-placement="right">
+
+                    <i class="material-icons sz-18">location_on</i>
+                    <span class="hidden-sm-down-force" translate>Hubs</span>
+                    <span class="hidden-md-up-force small-text mg-tp-15 text-uppercase caption"
+                          translate>Hubs</span>
+                    <span class="active-highlighter"></span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+    <div class="top-navigation space-between center text-nowrap">
+        <div class="left v-align-children"></div>
+        <div class="right v-align-children pull-right">
+            <div auto-close="outsideClick" class="profile-content">
+                <button class="btn type-flat mini no-bg-hover hover-primary" style="height: 60px;">
+                    <span class="mg-rt-5" style="text-transform: none">marlon.godinho</span>
+                    <span class="avatar-character img-circle">
+                        M
+                    </span>
+                    <i class="material-icons show-when-close">keyboard_arrow_down</i>
+                    <!-- <i class="material-icons show-when-open">keyboard_arrow_up</i> -->
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="menu-backdrop" ng-click="menuExpanded = false; $root.mezzanineIsActive = false"></div>
+</nav>

@@ -1,0 +1,220 @@
+<div class="row">
+    <div class="col-xs-12 space-between center">
+        <h1>Hubs</h1>
+        <div class="hidden-button-on-scroll" ng-class="{'show' : !showFab && !showAddHub}" ng-show="hubs.length > 0">
+            <button class="btn color-accent createButton" ng-click="showAddHubPanel()">
+                + novo hub
+            </button>
+        </div>
+    </div>
+</div>
+<div class="row" ng-show="hubs.length == 0 && loadingHubs == false">
+    <div class="col-xs-12 text-center">
+        <div style="width: 180px;display: inline-block;opacity: 0.1;margin-top: 90px;">
+            <svg x="0px" y="0px" viewBox="0 0 160 160" style="enable-background:new 0 0 160 160;" xml:space="preserve">
+                <rect x="78" y="-17" transform="matrix(0.7071 0.7071 -0.7071 0.7071 78.5858 -33.7229)" width="4" height="190"/>
+                <g>
+                	<path d="M46.5,103.7l29.3-29.3c-3.1-0.7-5.8-2.3-8.2-4.7c-3.4-3.4-5.1-7.6-5.1-12.5c0-4.9,1.7-9,5.1-12.5c3.4-3.4,7.6-5.1,12.5-5.1
+                		c4.9,0,9,1.7,12.5,5.1c2.4,2.4,3.9,5.1,4.7,8.2l23.8-23.8c-1.7-2.4-3.7-4.8-5.9-7c-9.6-9.6-21.3-14.4-35-14.4
+                		c-13.7,0-25.4,4.8-35,14.4s-14.4,21.3-14.4,35c0,6.9,1.8,14.8,5.3,23.9C39.1,89.5,42.6,97,46.5,103.7z"/>
+                	<path d="M81,74.8l-32.4,32.4c4.1,6.7,8.8,13.6,14.1,20.6c5.8,7.6,9.7,12.7,12,15.3c2.2,2.5,4,4.6,5.3,6.1l5.3-5.6
+                		c3.3-4,7.4-9.3,12.1-16.1c4.8-6.8,9.6-14,14.4-21.7c4.9-7.7,9-16,12.5-24.9c3.4-8.9,5.1-16.7,5.1-23.6c0-9.1-2.1-17.3-6.4-24.6
+                		L97.6,58.3"/>
+                </g>
+            </svg>
+        </div>
+        <span class="block full-width subheading mg-bt-30 pd-bt-30 color text-disabled-black">Nenhum hub cadastrado</span>
+        <button class="btn color-accent" ng-click="showAddHubPanel()">
+            + cadastrar hub
+        </button>
+    </div>
+</div>
+<div class="table-responsive table-card-parent" ng-show="hubs.length > 0">
+    <table class="table-card">
+        <thead>
+            <tr>
+                <th class="v-align-children cursor-pointer" ng-click="sortBy('name')">
+                    <span>Nome</span>
+                    <div class="color text-disabled-black mg-lt-15 clearfix" style="width: 38px;">
+                        <i class="material-icons pull-left color"
+                           ng-class="{'text-primary-black' : propertyName == 'name' && reverse}">arrow_drop_up</i>
+                        <i class="material-icons pull-left color"
+                           ng-class="{'text-primary-black' : propertyName == 'name' && !reverse}"
+                           style="margin-top: -10px;">arrow_drop_down</i>
+                    </div>
+                </th>
+                <th class="v-align-children cursor-pointer" ng-click="sortBy('address')">
+                    <span>Endereço</span>
+                    <div class="color text-disabled-black mg-lt-15 clearfix" style="width: 38px;">
+                        <i class="material-icons pull-left color"
+                           ng-class="{'text-primary-black' : propertyName == 'address' && reverse}">arrow_drop_up</i>
+                        <i class="material-icons pull-left color"
+                           ng-class="{'text-primary-black' : propertyName == 'address' && !reverse}"
+                           style="margin-top: -10px;">arrow_drop_down</i>
+                    </div>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="color text-secondary-black" ng-repeat="hub in hubs | orderBy:propertyName:reverse">
+                <td class="pivot" data-th="Nome">
+                    <span ng-show="hubActive != hub.id">{{hub.name}}</span>
+                    <div class="form-group mg-bt-0" ng-class="{'is-focused': hubNameIsFocused }" ng-show="hubActive == hub.id">
+                        <div class="relative clearfix">
+                            <input id="hubName-{{hub.id}}"
+                                   class="form-control subheading"
+                                   type="text"
+                                   name="hubName"
+                                   ng-model="hub.name"
+                                   ng-focus="hubNameIsFocused = true"
+                                   ng-blur="hubNameIsFocused = false"/>
+
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                </td>
+                <td data-th="Endereço">
+                    <span ng-show="hubActive != hub.id">{{hub.address}}</span>
+                    <div class="form-group mg-bt-0" ng-class="{'is-focused': hubAddressIsFocused }" ng-show="hubActive == hub.id">
+                        <div class="relative clearfix">
+                            <input id="hubAddress-{{hub.id}}"
+                                   class="form-control subheading"
+                                   type="text"
+                                   name="hubAddress"
+                                   ng-model="hub.address"
+                                   ng-focus="hubAddressIsFocused = true"
+                                   ng-blur="hubAddressIsFocused = false"/>
+
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group text-right" ng-show="hubActive != hub.id">
+                        <button class="btn type-flat" ng-click="showEditItem(hub)">
+                            Editar
+                        </button>
+                        <button class="btn type-flat" ng-click="confirmDelete(hub, hub.name)">
+                            Excluir
+                        </button>
+                    </div>
+                    <button class="btn" ng-click="saveEdit(hub)" ng-show="hubActive == hub.id">
+                        Salvar
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="pull-left loading empty" ng-show="loadingHubs"></div>
+<div class="fab-content bottom" ng-class="{'active' : showAddHub}">
+    <form class="structure" ng-submit="addHub()" ng-class="{'loading' : addLoading}">
+        <div class="structure-header center">
+            <div class="left">
+                <span class="title">+ Hub</span>
+            </div>
+            <div class="right">
+                <button class="btn type-flat icon-24" ng-click="closeAddHub()" type="button">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
+        </div>
+        <div class="structure-body">
+            <div class="overflow-limiter">
+                <div class="form-group" ng-class="{'is-focused': newHubNameIsFocused }">
+                    <label class="control-label" for="newHubName">
+                        <span>Nome</span>
+                    </label>
+                    <div class="relative clearfix">
+                        <input id="newHubName"
+                               class="form-control"
+                               type="text"
+                               name="newHubName"
+                               ng-model="newHubName"
+                               ng-focus="newHubNameIsFocused = true"
+                               ng-blur="newHubNameIsFocused = false" tabindex="1"/>
+
+                        <span class="material-input"></span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'is-focused': newHubAddressIsFocused }">
+                    <label class="control-label" for="newHubAddress">
+                        <span>Endereço</span>
+                    </label>
+                    <div class="relative clearfix">
+                        <input id="newHubAddress"
+                               class="form-control"
+                               type="text"
+                               name="newHubAddress"
+                               ng-model="newHubAddress"
+                               ng-focus="newHubAddressIsFocused = true"
+                               ng-blur="newHubAddressIsFocused = false" tabindex="3"/>
+
+                        <span class="material-input"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="structure-footer center" style="flex-shrink: 0">
+            <div class="left">
+                <div class="form-group checkbox mg-bt-0">
+                    <div class="content">
+                        <input id="continueAddHub" class="form-control mg-0" type="checkbox" name="continueAddHub" ng-model="continueAddHub">
+                        <div class="checkbox-icons text-left">
+                            <i class="material-icons">check_box_outline_blank</i>
+                            <i class="material-icons">check_box</i>
+                        </div>
+                        <label class="control-label mg-lt-5" for="continueAddHub">+1</label>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <div class="btn-group text-right">
+                    <button class="btn type-flat" type="button" ng-click="closeAddHub()" tabindex="5">
+                        descartar
+                    </button>
+                    <button class="btn" type="submit" tabindex="4" ng-disabled="!newHubName || !newHubAddress">
+                        salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="fab-group bottom-to-top hidden-fab-on-scroll" ng-class="{'show' : showFab}" style="width: 56px;height: 56px;transform-origin: 50% 50%;">
+    <button class="btn type-fab color-accent fab-content-toggle" ng-click="showAddHubPanel()" ng-class="{'active' : showAddHub}">
+        <i class="material-icons click-fab-icon">add</i>
+    </button>
+</div>
+
+<div class="modal" ng-class="{'active' : showDeleteDialog, 'loading' : deleteLoading}" style="position: fixed;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="structure" style="height: auto;">
+                <div class="structure-header no-border">
+                    <div class="left">
+                        <div class="texts">
+                            <span class="subheading">Excluir veículo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="structure-part pd-lt-30 pd-rt-30">
+                    <p>Deseja mesmo excluir o veículo <span class="text-nowrap">{{hubToDeleteName}}</span>?</p>
+                </div>
+                <div class="structure-footer no-border">
+                    <div class="right">
+                        <button class="btn type-flat" ng-click="cancelDelete()">
+                            voltar
+                        </button>
+                        <button class="btn type-flat color-primary" ng-click="deleteHub(hubToDelete)">
+                            Excluir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop" ng-class="{'active' : showDeleteDialog}"></div>
