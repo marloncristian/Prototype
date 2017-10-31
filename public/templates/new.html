@@ -71,6 +71,39 @@
     [class^="structure-"]:not(.no-progress), .justify-children {
         position: relative;
     }
+    .slot-drag {
+        position: relative;
+    }
+
+    .slot-drag::after {
+        content: "+";
+        position: absolute;
+        bottom: 15px;
+        width: calc(100% - 30px);
+        border: 4px dashed #000;
+        height: 135px;
+        text-align: center;
+        font-size: 85px;
+        opacity: 0.12;
+    }
+    #group1 > div {
+        border-left: 4px solid #ff0000;
+        cursor: move;
+    }
+    #group2 > div {
+        border-left: 4px solid #009688;
+        cursor: move;
+    }
+    #group3 > div {
+        border-left: 4px solid #555555;
+        cursor: move;
+    }
+    [id^="drag"] {
+        transition: background-color 300ms;
+    }
+    [id^="drag"]:hover {
+        background-color: #cfcfcf;
+    }
 </style>
 <div class="page bg-color white" ng-class="{'resize' : showAddressContentActive != null, 'in-progress' : inProgress}">
     <div class="justify-children center pd-tp-10 pd-bt-10 pd-rt-15 pd-lt-15" ng-show="showAddressContentActive == null">
@@ -723,38 +756,73 @@
             </div>
         </div>
         <hr class="mg-0" ng-show="showAddressContentActive == null">
-        <div class="structure-body">
+        <div class="structure-body pd-lt-15-force pd-rt-15-force">
             <div class="row justify-children">
                 <div class="col-xs-12">
                     <span class="col-border-right bg-color black"></span>
-                    <ul class="list-group pd-0-force">
-                        <a class="list-item vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter0 | limitTo: qtyType0" ng-click="setActiveVehicle(vehicle.id)">
-                            <span class="caption color text-secondary-black">{{(vTypes | filter : {id: vehicle.type_id})[0].name }}</span>
-                            <span class="block full-width"></span>{{vehicle.licensePlate}}
-                        </a>
-                        <a class="list-item vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter1 | limitTo: qtyType1" ng-click="setActiveVehicle(vehicle.id)">
-                            <span class="caption color text-secondary-black">{{(vTypes | filter : {id: vehicle.type_id})[0].name }}</span>
-                            <span class="block full-width"></span>{{vehicle.licensePlate}}
-                        </a>
-                        <a class="list-item vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter2 | limitTo: qtyType2" ng-click="setActiveVehicle(vehicle.id)">
-                            <span class="caption color text-secondary-black">{{(vTypes | filter : {id: vehicle.type_id})[0].name }}</span>
-                            <span class="block full-width"></span>{{vehicle.licensePlate}}
-                        </a>
-                        <a class="list-item vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter3 | limitTo: qtyType3" ng-click="setActiveVehicle(vehicle.id)">
-                            <span class="caption color text-secondary-black">{{(vTypes | filter : {id: vehicle.type_id})[0].name }}</span>
-                            <span class="block full-width"></span>{{vehicle.licensePlate}}
-                        </a>
-                    </ul>
+                    <div class="overflow-limiter show-scroll" style="overflow-y: auto !important;">
+                        <span class="title">Remanescentes</span>
+                        <div class="card-body mg-tp-15 pd-15 slot-drag" id="group3" ondrop="drop(event)" ondragover="allowDrop(event)" style="padding-bottom: 150px;margin-left: -15px;margin-right: -10px;">
+                            <div id="drag{{$index}}" class="bg-color body-bg pd-15 mg-bt-15" ng-repeat="point in points | filter: filterPoints3" draggable="true" ondragstart="drag(event)">
+                                <span class="subheading">{{point.route + ', ' + point.street_number + ' - ' + point.subregion + ', ' + point.city + ' - ' + point.state + ', ' + point.postal + ', ' + point.country}}</span>
+                                <span class="body-2">{{point.price}}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-xs-12">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid tempora, minus, numquam accusamus vitae, optio cupiditate distinctio soluta molestiae suscipit est iste. Ipsum quisquam iure repellendus vero dolorem officiis, perferendis sed hic animi reprehenderit, aspernatur odit cum? Nesciunt omnis, dolore modi amet et molestiae, veniam cumque ab ipsa vitae consectetur repellat, eaque repudiandae. Eveniet, corporis vero nisi doloremque cumque non minima deserunt veritatis dolores quam suscipit laboriosam, beatae molestiae iure. Mollitia, officia quae necessitatibus nihil adipisci a id ea quisquam alias! Sequi architecto illum consequuntur explicabo ipsum. Explicabo nisi officiis maxime asperiores omnis sequi libero, eligendi laboriosam beatae, quae, pariatur.</p>
+                <div class="col-xs-12 bg-color body-bg">
+                    <div class="overflow-limiter show-scroll" style="overflow-y: auto !important;">
+
+                        <div class="card mg-bt-15 interactive vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter0 | limitTo: 1" ng-click="setActiveVehicle(vehicle.id)" style="margin-left: 4px">
+                            <div class="card-header bordered">
+                                <div class="left">
+                                    <div class="mg-rt-15" style="width: 24px; height: 24px; background-color: #FF0000"></div><!--
+                                 --><div class="texts">
+                                        <span class="caption color text-secondary-black">{{(vTypes | filter : {id: vehicle.type_id})[0].name }}</span>
+                                        <span class="block full-width">{{vehicle.licensePlate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body pd-15 slot-drag" id="group1" ondrop="drop(event)" ondragover="allowDrop(event)" style="padding-bottom: 150px;">
+                                <div id="drag{{$index}}" class="bg-color body-bg pd-15 mg-bt-15" ng-repeat="point in points | limitTo: 3" draggable="true" ondragstart="drag(event)">
+                                    <span class="subheading">{{point.route + ', ' + point.street_number + ' - ' + point.subregion + ', ' + point.city + ' - ' + point.state + ', ' + point.postal + ', ' + point.country}}</span>
+                                    <span class="body-2">{{point.price}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mg-bt-15 interactive vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter1 | limitTo: 1" ng-click="setActiveVehicle(vehicle.id)" style="margin-left: 4px">
+                            <div class="card-header bordered">
+                                <div class="left">
+                                    <div class="mg-rt-15" style="width: 24px; height: 24px; background-color: #009688"></div><!--
+                                 --><div class="texts">
+                                        <span class="caption color text-secondary-black">{{(vTypes | filter : {id: vehicle.type_id})[0].name }}</span>
+                                        <span class="block full-width">{{vehicle.licensePlate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body pd-15 slot-drag" id="group2" ondrop="drop(event)" ondragover="allowDrop(event)" style="padding-bottom: 150px;">
+                                <div id="drag{{$index}}" class="bg-color body-bg pd-15 mg-bt-15" ng-repeat="point in points | filter: filterPoints2 | limitTo: 2" draggable="true" ondragstart="drag(event)">
+                                    <span class="subheading">{{point.route + ', ' + point.street_number + ' - ' + point.subregion + ', ' + point.city + ' - ' + point.state + ', ' + point.postal + ', ' + point.country}}</span>
+                                    <span class="body-2">{{point.price}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="structure right" ng-show="scriptingStep == 3" style="width: 50%;">
-        <div class="fake-map bg-color body-bg">
+        <div class="structure-body">
+            <div class="fake-map bg-color body-bg">
 
+            </div>
+        </div>
+        <div class="structure-footer" style="flex-shrink: 0;">
+            <div class="right">
+                <button class="btn">Exportar</button>
+            </div>
         </div>
     </div>
 </div>

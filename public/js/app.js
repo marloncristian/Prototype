@@ -109,6 +109,26 @@ rps.controller('MainController', function MainController($scope, $route, $routeP
         return item.type_id == 0;
     };
 
+    $scope.filter1 = function (item) {
+        return item.type_id == 1;
+    };
+
+    $scope.filter2 = function (item) {
+        return item.type_id == 2;
+    };
+
+    $scope.filter3 = function (item) {
+        return item.type_id == 3;
+    };
+
+    $scope.filterPoints2 = function (item) {
+        return item.id >= 3;
+    };
+
+    $scope.filterPoints3 = function (item) {
+        return item.id >= 5;
+    };
+
     $scope.showToastMessage = function(message) {
         $scope.toastMessage = message;
         $scope.showToast = true;
@@ -147,7 +167,6 @@ rps.controller('MainController', function MainController($scope, $route, $routeP
     $scope.showParam = function(param){
         return $scope.showType[param] != '';
     };
-
 });
 
 rps.controller('ScriptingsListController', function ScriptingsListController($scope, $routeParams) {

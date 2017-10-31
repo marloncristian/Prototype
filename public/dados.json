@@ -1,108 +1,120 @@
 {
-    "params": [{
-        "main" : {
-            "name" : "Nova_roteirização",
-            "step" : 1
+    "hubs": {
+        "-KxmLJ0Dmt2q7B_CVMRw": {
+            "address": "Av. Francisco Sales, 358, Floresta, Belo Horizonte - Minas Gerais",
+            "id": 1,
+            "name": "CD Floresta"
         }
-    }],
+    },
+    "params": {
+        "name": "Nova_roteirização",
+        "step": 3
+    },
     "points": {
         "-Kx93cguE8f0MY8PLcko": {
+            "id": 0,
             "city": "Belo Horizonte",
             "country": "Brasil",
             "lat": -19.9417347,
             "lng": -43.92428789999997,
             "postal": "30130",
+            "price": "R$ 1.789,00",
             "route": "Avenida Afonso Pena",
             "state": "Minas Gerais",
             "street_number": "3577",
             "subregion": "Centro",
             "volume": "200 cm³",
-            "weight": "8 kg",
-            "price": "R$ 1.789,00"
+            "weight": "8 kg"
         },
         "-Kx94Nwd_E4XgIKSX0f4": {
+            "id": 1,
             "city": "",
             "country": "Brasil",
             "lat": -19.9186366,
             "lng": -43.93034269999998,
             "postal": "30150",
+            "price": "R$ 2.000,00",
             "route": "Avenida Francisco Sales",
             "state": "Minas Gerais",
             "street_number": "358",
             "subregion": "Floresta",
             "volume": "300 cm³",
-            "weight": "15 kg",
-            "price": "R$ 2.000,00"
+            "weight": "15 kg"
         },
         "-Kx94SPSWphRmHKaMsPW": {
+            "id": 2,
             "city": "Belo Horizonte",
             "country": "Brasil",
             "lat": -19.9452542,
             "lng": -43.92256850000001,
             "postal": "30130",
+            "price": "R$ 4.777,00",
             "route": "Avenida Afonso Pena",
             "state": "Minas Gerais",
             "street_number": "4000",
             "subregion": "",
             "volume": "170 cm³",
-            "weight": "2 kg",
-            "price": "R$ 4.777,00"
+            "weight": "2 kg"
         },
         "-Kx94XGMJTUh7QmHq4YS": {
+            "id": 3,
             "city": "Belo Horizonte",
             "country": "Brasil",
             "lat": -19.9202291,
             "lng": -43.94275210000001,
             "postal": "30120-020",
+            "price": "R$ 100,00",
             "route": "Avenida Paraná",
             "state": "Minas Gerais",
             "street_number": "502",
             "subregion": "Centro",
             "volume": "235 cm³",
-            "weight": "5 kg",
-            "price": "R$ 100,00"
+            "weight": "5 kg"
         },
         "-Kx972soOm6xQc-O8B9W": {
+            "id": 4,
             "city": "Belo Horizonte",
             "country": "Brasil",
             "lat": -19.9257581,
             "lng": -43.93417820000002,
             "postal": "30130",
+            "price": "R$ 1.000.000,00",
             "route": "Avenida Afonso Pena",
             "state": "Minas Gerais",
             "street_number": "1537",
             "subregion": "",
             "volume": "1 cm³",
-            "weight": "10 kg",
-            "price": "R$ 1.000.000,00"
+            "weight": "10 kg"
         },
         "-Kx9BXwbUzCga-fqwVLH": {
+            "id": 5,
             "city": "Belo Horizonte",
             "country": "Brasil",
             "lat": -19.9338724,
             "lng": -43.92969419999997,
             "postal": "30140",
+            "price": "R$ 10,00",
             "route": "Avenida Afonso Pena",
             "state": "Minas Gerais",
             "street_number": "2564",
             "subregion": "Funcionários",
             "volume": "1000 cm³",
-            "weight": "1 kg",
-            "price": "R$ 10,00"
+            "weight": "1 kg"
         },
         "-KxDWi2EWpDFTRQYHEEe": {
+            "id": 6,
             "city": "Belo Horizonte",
             "country": "Brasil",
             "lat": -19.9311533,
             "lng": -43.934571300000016,
             "postal": "30130-009",
+            "price": "R$ 1.999,00",
             "route": "Avenida Brasil",
             "state": "Minas Gerais",
             "street_number": "1666",
             "subregion": "Boa Viagem",
             "volume": "100 cm³",
-            "weight": "15 kg",
-            "price": "R$ 1.999,00"
+            "weight": "15 kg"
         }
     },
     "vehicleTypes": [{
@@ -111,31 +123,141 @@
         "maxVolume": 870000,
         "maxWeight": 101,
         "name": "Carreta",
-        "qty": 0,
-        "plural": "Carretas"
+        "plural": "Carretas",
+        "qty": 4
     }, {
         "id": 1,
         "maxDim": 6,
         "maxVolume": 570000,
         "maxWeight": 370,
         "name": "Caminhão",
-        "qty": 0,
-        "plural": "Caminhões"
+        "plural": "Caminhões",
+        "qty": 8
     }, {
         "id": 2,
         "maxDim": 4,
         "maxVolume": 300,
         "maxWeight": 200,
         "name": "Van",
-        "qty": 0,
-        "plural": "Vans"
+        "plural": "Vans",
+        "qty": 3
     }, {
         "id": 3,
         "maxDim": 4,
         "maxVolume": 300,
         "maxWeight": 200,
         "name": "Motocicleta",
-        "qty": 0,
-        "plural": "Motocilcetas"
-    }]
+        "plural": "Motocilcetas",
+        "qty": 3
+    }],
+    "vehicles": {
+        "-KxmKQaPj6Y5o_KTYapQ": {
+            "id": 1,
+            "licensePlate": "CAM-2424",
+            "maxValue": 100,
+            "type_id": "1"
+        },
+        "-KxmKT3bza2W3FC00x-9": {
+            "id": 2,
+            "licensePlate": "CAM-2323",
+            "maxValue": 1000,
+            "type_id": "1"
+        },
+        "-KxmKVrz5BJoZnPbA2WX": {
+            "id": 3,
+            "licensePlate": "CAM-1313",
+            "maxValue": 1999,
+            "type_id": "1"
+        },
+        "-KxmKXuqJy_CxRjOyfR1": {
+            "id": 4,
+            "licensePlate": "CAM-2424",
+            "maxValue": 190,
+            "type_id": "1"
+        },
+        "-KxmKanSlVjEk9Vup54g": {
+            "id": 5,
+            "licensePlate": "CCC-0001",
+            "maxValue": 9000,
+            "type_id": "0"
+        },
+        "-KxmKdEZXbPIqDmWpy4J": {
+            "id": 6,
+            "licensePlate": "CCC-9090",
+            "maxValue": 100000,
+            "type_id": "0"
+        },
+        "-KxneNZXz1PJCZv4OCRq": {
+            "id": 7,
+            "licensePlate": "CAM-9090",
+            "maxValue": 19999,
+            "type_id": "1"
+        },
+        "-KxnePgu6iRFTIZ8oSdg": {
+            "id": 8,
+            "licensePlate": "CAM-0001",
+            "maxValue": 1000,
+            "type_id": "1"
+        },
+        "-KxneReY876f63aCIvQV": {
+            "id": 9,
+            "licensePlate": "CAM-1819",
+            "maxValue": 1019019,
+            "type_id": "1"
+        },
+        "-KxneTIsuP1HuasOcUBe": {
+            "id": 10,
+            "licensePlate": "CAM-9276",
+            "maxValue": 1919,
+            "type_id": "1"
+        },
+        "-KxneV8QZEZV_RKDwMBV": {
+            "id": 11,
+            "licensePlate": "CCC-1081",
+            "maxValue": 100,
+            "type_id": "0"
+        },
+        "-KxneWTCtPKgVE1UK1SV": {
+            "id": 12,
+            "licensePlate": "CCC-1937",
+            "maxValue": 181902,
+            "type_id": "0"
+        },
+        "-Kxne_NU39aqjVKvqpEF": {
+            "id": 13,
+            "licensePlate": "MMM-0182",
+            "maxValue": 100,
+            "type_id": "3"
+        },
+        "-KxnebqTJqzla3GVjeHf": {
+            "id": 14,
+            "licensePlate": "MMM-0101",
+            "maxValue": 10,
+            "type_id": "3"
+        },
+        "-Kxnedon1cOGwQhiZ7Rh": {
+            "id": 15,
+            "licensePlate": "MMM-0001",
+            "maxValue": 100,
+            "type_id": "3"
+        },
+        "-KxnefhCJFEOYrtAwpOE": {
+            "id": 16,
+            "licensePlate": "VAN-0001",
+            "maxValue": 10000,
+            "type_id": "2"
+        },
+        "-Kxneh98aKJwGIo_u8EV": {
+            "id": 17,
+            "licensePlate": "VAN-0000",
+            "maxValue": 9201291,
+            "type_id": "2"
+        },
+        "-KxneilTG7yhgalnua5K": {
+            "id": 18,
+            "licensePlate": "VAN-0011",
+            "maxValue": 10,
+            "type_id": "2"
+        }
+    }
 }
