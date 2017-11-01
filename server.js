@@ -4,10 +4,10 @@ const app = express();
 
 var port = process.env.PORT || 8080;
 
-app.use('/static', express.static('public'));
+app.use('/static', express.static('static'));
 
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'static', 'index.html'));
 });
 
 var server = app.listen(port, function () {
