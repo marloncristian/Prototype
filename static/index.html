@@ -41,7 +41,9 @@
         function drop(ev) {
             ev.preventDefault();
             var data = ev.dataTransfer.getData("text");
-            ev.target.appendChild(document.getElementById(data));
+            if(ev.target.id == "group1" || ev.target.id == "group2" || ev.target.id == "group3") {
+                ev.target.appendChild(document.getElementById(data));
+            }
         }
     </script>
 

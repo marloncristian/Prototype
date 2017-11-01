@@ -167,6 +167,7 @@ rps.controller('MainController', function MainController($scope, $route, $routeP
     $scope.showParam = function(param){
         return $scope.showType[param] != '';
     };
+
 });
 
 rps.controller('ScriptingsListController', function ScriptingsListController($scope, $routeParams) {

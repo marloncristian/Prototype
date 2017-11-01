@@ -87,16 +87,30 @@
         opacity: 0.12;
     }
     #group1 > div {
-        border-left: 4px solid #ff0000;
+        border-left: 20px solid #ff0000;
         cursor: move;
+        position: relative;
     }
     #group2 > div {
-        border-left: 4px solid #009688;
+        border-left: 20px solid #009688;
         cursor: move;
+        position: relative;
     }
     #group3 > div {
-        border-left: 4px solid #555555;
+        border-left: 20px solid #555555;
         cursor: move;
+        position: relative;
+    }
+    [id^="group"] > div::after {
+        content: "||";
+        position: absolute;
+        left: -16px;
+        top: 50%;
+        font-size: 30px;
+        color: #fff;
+        margin-top: -22px;
+        font-weight: 100;
+        opacity: 0.7;
     }
     [id^="drag"] {
         transition: background-color 300ms;
@@ -773,7 +787,7 @@
                 <div class="col-xs-12 bg-color body-bg">
                     <div class="overflow-limiter show-scroll" style="overflow-y: auto !important;">
 
-                        <div class="card mg-bt-15 interactive vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter0 | limitTo: 1" ng-click="setActiveVehicle(vehicle.id)" style="margin-left: 4px">
+                        <div class="card mg-bt-15 vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter0 | limitTo: 1" ng-click="setActiveVehicle(vehicle.id)" style="margin-left: 4px">
                             <div class="card-header bordered">
                                 <div class="left">
                                     <div class="mg-rt-15" style="width: 24px; height: 24px; background-color: #FF0000"></div><!--
@@ -783,6 +797,37 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="card-part pd-15">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <small class="mg-bt-5 block full-width">Volume <b class="pull-right color text-error">115%</b></small>
+                                        <small class="mg-bt-5 block full-width">Peso <b class="pull-right">90%</b></small>
+                                        <small class="block full-width">Valor da carga <b class="pull-right">70%</b></small>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <span class="col-border-right bg-color black" style="right: 32px; border-right-style: dashed; border-right-width: 1px; top: -10px; border-right-color: #000; background-color: transparent; height: calc(100% + 20px);"></span>
+                                        <div class="mg-bt-5" style="display: flex;">
+                                            <div class="block full-width relative" style="height: 15px; background-color: #cfcfcf; overflow: hidden;">
+                                                <span class="full-width bg-color accent" style="position: absolute; height: 100%; transform: translateX(0); border-right: 2px solid rgba(0,0,0,0.2);"></span>
+                                            </div>
+                                            <div class="block relative" style="height: 15px;width: 20px;background-color: red;opacity: 0.5;"></div>
+                                        </div>
+                                        <div class="mg-bt-5" style="display: flex;">
+                                            <div class="block full-width relative" style="height: 15px; background-color: #cfcfcf; overflow: hidden;">
+                                                <span class="full-width bg-color accent" style="position: absolute; height: 100%; transform: translateX(-10%); border-right: 2px solid rgba(0,0,0,0.2);"></span>
+                                            </div>
+                                            <div class="block relative" style="height: 15px;width: 20px;background-color: transparent;"></div>
+                                        </div>
+                                        <div style="display: flex;">
+                                            <div class="block full-width relative" style="height: 15px; background-color: #cfcfcf; overflow: hidden;">
+                                                <span class="full-width bg-color accent" style="position: absolute; height: 100%; transform: translateX(-30%); border-right: 2px solid rgba(0,0,0,0.2);"></span>
+                                            </div>
+                                            <div class="block relative" style="height: 15px;width: 20px;background-color: transparent;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="mg-0">
                             <div class="card-body pd-15 slot-drag" id="group1" ondrop="drop(event)" ondragover="allowDrop(event)" style="padding-bottom: 150px;">
                                 <div id="drag{{$index}}" class="bg-color body-bg pd-15 mg-bt-15" ng-repeat="point in points | limitTo: 3" draggable="true" ondragstart="drag(event)">
                                     <span class="subheading">{{point.route + ', ' + point.street_number + ' - ' + point.subregion + ', ' + point.city + ' - ' + point.state + ', ' + point.postal + ', ' + point.country}}</span>
@@ -791,7 +836,7 @@
                             </div>
                         </div>
 
-                        <div class="card mg-bt-15 interactive vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter1 | limitTo: 1" ng-click="setActiveVehicle(vehicle.id)" style="margin-left: 4px">
+                        <div class="card mg-bt-15 vehicle-{{vehicle.id}}" ng-repeat="vehicle in vehicles | filter: filter1 | limitTo: 1" ng-click="setActiveVehicle(vehicle.id)" style="margin-left: 4px">
                             <div class="card-header bordered">
                                 <div class="left">
                                     <div class="mg-rt-15" style="width: 24px; height: 24px; background-color: #009688"></div><!--
@@ -801,6 +846,37 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="card-part pd-15">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <small class="mg-bt-5 block full-width">Volume <b class="pull-right">50%</b></small>
+                                        <small class="mg-bt-5 block full-width">Peso <b class="pull-right">83%</b></small>
+                                        <small class="block full-width">Valor da carga <b class="pull-right">97%</b></small>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <span class="col-border-right bg-color black" style="right: 15px; border-right-style: dashed; border-right-width: 1px; top: -10px; border-right-color: #000; background-color: transparent; height: calc(100% + 20px);"></span>
+                                        <div class="mg-bt-5" style="display: flex;">
+                                            <div class="block full-width relative" style="height: 15px; background-color: #cfcfcf; overflow: hidden;">
+                                                <span class="full-width bg-color accent" style="position: absolute; height: 100%; transform: translateX(-50%); border-right: 2px solid rgba(0,0,0,0.2);"></span>
+                                            </div>
+                                            <div class="block relative" style="height: 15px;width: 0;background-color: red;opacity: 0.5;"></div>
+                                        </div>
+                                        <div class="mg-bt-5" style="display: flex;">
+                                            <div class="block full-width relative" style="height: 15px; background-color: #cfcfcf; overflow: hidden;">
+                                                <span class="full-width bg-color accent" style="position: absolute; height: 100%; transform: translateX(-17%); border-right: 2px solid rgba(0,0,0,0.2);"></span>
+                                            </div>
+                                            <div class="block relative" style="height: 15px;width: 0;background-color: transparent;"></div>
+                                        </div>
+                                        <div style="display: flex;">
+                                            <div class="block full-width relative" style="height: 15px; background-color: #cfcfcf; overflow: hidden;">
+                                                <span class="full-width bg-color accent" style="position: absolute; height: 100%; transform: translateX(-3%); border-right: 2px solid rgba(0,0,0,0.2);"></span>
+                                            </div>
+                                            <div class="block relative" style="height: 15px;width: 0;background-color: transparent;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="mg-0">
                             <div class="card-body pd-15 slot-drag" id="group2" ondrop="drop(event)" ondragover="allowDrop(event)" style="padding-bottom: 150px;">
                                 <div id="drag{{$index}}" class="bg-color body-bg pd-15 mg-bt-15" ng-repeat="point in points | filter: filterPoints2 | limitTo: 2" draggable="true" ondragstart="drag(event)">
                                     <span class="subheading">{{point.route + ', ' + point.street_number + ' - ' + point.subregion + ', ' + point.city + ' - ' + point.state + ', ' + point.postal + ', ' + point.country}}</span>
@@ -814,9 +890,9 @@
         </div>
     </div>
     <div class="structure right" ng-show="scriptingStep == 3" style="width: 50%;">
-        <div class="structure-body">
-            <div class="fake-map bg-color body-bg">
-
+        <div class="structure-body pd-0-force">
+            <div class="fake-map bg-color body-bg" style="overflow: hidden;">
+                <img class="full-height" src="static/imgs/map.jpg" alt="">
             </div>
         </div>
         <div class="structure-footer" style="flex-shrink: 0;">
